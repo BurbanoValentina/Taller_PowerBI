@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Despliegue Power BI — Proyecto 3: Análisis de Accidentes de Tránsito (EE.UU.)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-alt: #263449;
+      --border: #334155;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-2: #f97316;
+      --success: #22c55e;
+      --warn: #eab308;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 2rem 1.5rem;
+    }
+    .container { max-width: 1280px; margin: 0 auto; }
+    .badge {
+      display: inline-block;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .subtitle { color: var(--muted); max-width: 900px; }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin: 1.75rem 0;
+    }
+    .kpi-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 1.1rem 1.25rem;
+    }
+    .kpi-card.orange { border-left-color: var(--accent-2); }
+    .kpi-card.green { border-left-color: var(--success); }
+    .kpi-card.yellow { border-left-color: var(--warn); }
+    .kpi-label { font-size: 0.82rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+    .kpi-value { font-size: 1.75rem; font-weight: 700; margin-top: 0.25rem; }
+    .kpi-note { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 1.5rem 0 1.25rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 0.75rem;
+    }
+    .tab-btn {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .tab-btn:hover { color: var(--text); border-color: var(--accent); }
+    .tab-btn.active {
+      background: var(--accent);
+      color: #0f172a;
+      border-color: var(--accent);
+    }
+
+    .panel { display: none; }
+    .panel.active { display: block; }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    @media (max-width: 600px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+    }
+    .view-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+    .view-card img {
+      width: 100%;
+      height: auto;
+      display: block;
+      background: #fff;
+      cursor: zoom-in;
+    }
+    .view-body { padding: 1.15rem 1.25rem; }
+    .view-title { font-size: 1.08rem; font-weight: 700; color: var(--accent); margin-bottom: 0.4rem; }
+    .view-desc { font-size: 0.92rem; color: #cbd5e1; }
+    .audit-tag {
+      display: inline-block;
+      margin-top: 0.6rem;
+      font-size: 0.78rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 6px;
+      background: rgba(249, 115, 22, 0.14);
+      color: #fdba74;
+      border: 1px solid rgba(249, 115, 22, 0.3);
+    }
+
+    .code-box {
+      background: #0b1120;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem;
+      margin: 1rem 0 1.5rem;
+      overflow-x: auto;
+      font-family: 'Cascadia Code', Consolas, monospace;
+      font-size: 0.86rem;
+      color: #e2e8f0;
+    }
+    .section-title { font-size: 1.35rem; font-weight: 700; margin: 1.25rem 0 0.75rem; color: var(--text); }
+    .dax-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    .dax-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.1rem;
+    }
+    .dax-card h3 { color: var(--accent); font-size: 1rem; margin-bottom: 0.5rem; }
+    .dax-card pre {
+      background: #0b1120;
+      padding: 0.75rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      font-size: 0.82rem;
+      margin-bottom: 0.6rem;
+      color: #bae6fd;
+    }
+    .dax-card p { font-size: 0.88rem; color: #cbd5e1; }
+
+    .embed-box {
+      background: var(--surface);
+      border: 1px dashed var(--accent);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .embed-controls { display: flex; gap: 0.75rem; flex-wrap: wrap; margin: 1rem 0; }
+    .embed-controls input {
+      flex: 1;
+      min-width: 280px;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #0b1120;
+      color: var(--text);
+    }
+    .embed-controls button {
+      background: var(--accent);
+      color: #0f172a;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    iframe {
+      width: 100%;
+      height: 620px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #0b1120;
+      display: none;
+    }
+    .lightbox {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+      display: none; align-items: center; justify-content: center;
+      padding: 1.5rem; z-index: 999;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img { max-width: 95%; max-height: 92vh; border-radius: 8px; background: #fff; }
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 2rem 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.86rem;
+    }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <span class="badge">Entregable 2 — Despliegue HTML &amp; Documentación Power BI</span>
+      <h1>Proyecto 3: Análisis de Accidentes de Tránsito en Zonas Urbanas (EE.UU.)</h1>
+      <p class="subtitle">
+        Portal web de despliegue y documentación técnica del tablero desarrollado en Microsoft Power BI Desktop
+        sobre el dataset <strong>US Accidents (2016–2023)</strong> de Kaggle (~7.73 millones de registros),
+        integrado con medidas DAX, modelado Power Query (M) y auditoría cruzada con Python/SQL.
+      </p>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-label">Total Accidentes</div>
+          <div class="kpi-value">7,728,394</div>
+          <div class="kpi-note">Visualizado en tarjeta KPI como 8M / 7728K</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">Severidad Dominante</div>
+          <div class="kpi-value">Nivel 2 (79.7%)</div>
+          <div class="kpi-note">6,157K eventos · Graves (S3+S4): 1,504K</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Duración Mediana vs Media</div>
+          <div class="kpi-value">75 min / 444 min</div>
+          <div class="kpi-note">Sesgo positivo por cierres prolongados</div>
+        </div>
+        <div class="kpi-card yellow">
+          <div class="kpi-label">Día y Ciudad Crítica</div>
+          <div class="kpi-value">Viernes · Miami</div>
+          <div class="kpi-note">Viernes: 1,366K · California líder estatal</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('vistas', this)">1. Vistas del Tablero Power BI (8)</button>
+      <button class="tab-btn" onclick="showTab('dax', this)">2. Medidas DAX Explicadas</button>
+      <button class="tab-btn" onclick="showTab('pq', this)">3. Código Power Query (M)</button>
+      <button class="tab-btn" onclick="showTab('embed', this)">4. Visor Power BI Web (Iframe)</button>
+    </div>
+
+    <section id="vistas" class="panel active">
+      <h2 class="section-title">Galería Documentada del Dashboard Power BI</h2>
+      <p style="color: var(--muted); margin-bottom: 1.25rem;">
+        Haz clic en cualquier captura para ampliarla. Cada vista responde directamente a los requerimientos analíticos del proyecto.
+      </p>
+      <div class="gallery-grid">
+        <article class="view-card">
+          <img src="../assets/powerbi/01_frecuencia_estado_top10_ciudades.jpg" alt="Frecuencia por estado y Top 10 ciudades" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 1 · Frecuencia por Estado y Top 10 Ciudades (Req. 1)</div>
+            <p class="view-desc">
+              Mapa coroplético de Estados Unidos con filtro segmentador por código estatal (AL–WY) y ranking horizontal
+              de las 10 ciudades con mayor siniestralidad: <strong>Miami, Houston, Los Angeles, Charlotte, Dallas, Orlando, Austin, Raleigh, Nashville y Baton Rouge</strong>.
+            </p>
+          </div>
+        </article>
+
+        <article class="view-card">
+          <img src="../assets/powerbi/02_kpis_hora_dia_semana.jpg" alt="KPIs, hora del día y día de la semana" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 2 · Patrón Horario, Semanal y Tarjetas KPI (Req. 2 y 6)</div>
+            <p class="view-desc">
+              Distribución bimodal horaria con picos de congestión laboral (7:00–9:00 a.m. y 3:00–6:00 p.m.) y barras por día
+              mostrando que el <strong>viernes (1,366K)</strong> lidera los incidentes mientras el fin de semana cae a <strong>563K (domingo)</strong> y <strong>669K (sábado)</strong>.
+            </p>
+            <span class="audit-tag">Auditoría: FinDeSemana muestra 366 por contexto de fechas YTD; el total real Sáb+Dom es 1,231,427 (~1.23M).</span>
+          </div>
+        </article>
+
+        <article class="view-card">
+          <img src="../assets/powerbi/03_severidad_clima_porcentaje.jpg" alt="Distribución por severidad y clima" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 3 · Severidad y Proporción por Clima 100% (Req. 3 y 4)</div>
+            <p class="view-desc">
+              Gráfico de anillo sobre 7,728K incidentes: Severidad 2 domina con <strong>6,157K</strong>, seguida por Severidad 3 (<strong>1,299K</strong>),
+              Severidad 4 (<strong>205K</strong>) y Severidad 1 (<strong>67K</strong>). En barras apiladas al 100%, <em>Lluvia</em> y <em>Otro</em> elevan la proporción de Severidad 3 (>20%).
+            </p>
+          </div>
+        </article>
+
+        <article class="view-card">
+          <img src="../assets/powerbi/04_accidentes_clima_estado.jpg" alt="Accidentes por clima y estado" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 4 · Volumen Climático y Tooltip Estatal (Req. 4)</div>
+            <p class="view-desc">
+              Desglose exacto de los 6 grupos climáticos: <strong>Despejado (3,369,545)</strong>, <strong>Nublado (2,915,115)</strong>,
+              <strong>Otro (623,936)</strong>, <strong>Lluvia (478,761)</strong>, <strong>Niebla (191,668)</strong> y <strong>Nieve/Hielo (149,367)</strong>, junto con mapa interactivo (ej. Idaho = 11,376).
+            </p>
+          </div>
+        </article>
+
+        <article class="view-card">
+          <img src="../assets/powerbi/05_top10_vias_peligrosas.png" alt="Top 10 vías más peligrosas" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 5 · Vías Más Peligrosas (Req. 5)</div>
+            <p class="view-desc">
+              Visualización de calles con el filtro Top 10 configurado en Power BI (`Zuni Rd SE`, `Zuni St`, `Zuniga Dr`, ...).
+            </p>
+            <span class="audit-tag">Auditoría: El visual ordenó por Street descendente (Z→A) en lugar de volumen; en Python/SQL se obtiene el ranking real (I-95 N, I-95 S, I-5 N).</span>
+          </div>
+        </article>
+
+        <article class="view-card">
+          <img src="../assets/powerbi/06_duracion_promedio_severidad.png" alt="Duración promedio y mediana por severidad" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 6 · Duración Promedio vs Mediana por Severidad (Req. 7)</div>
+            <p class="view-desc">
+              La duración media global alcanza <strong>444 min</strong> frente a una mediana de <strong>75 min</strong>. Por severidad: Nivel 4 promedia <strong>1,685 min</strong>,
+              Nivel 2 <strong>485 min</strong>, Nivel 3 <strong>75 min</strong> y Nivel 1 <strong>54 min</strong>, revelando impacto de outliers extremos en Nivel 2 y 4.
+            </p>
+          </div>
+        </article>
+
+        <article class="view-card">
+          <img src="../assets/powerbi/07_tendencias_anuales_mensuales_mom.png" alt="Tendencias anuales, mensuales y Var MoM" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 7 · Tendencias Anuales, Mensuales y Var MoM % (Req. 8)</div>
+            <p class="view-desc">
+              Evolución interanual 2016–2023 y serie mensual con indicador de variación mensual (`Var MoM %`).
+            </p>
+            <span class="audit-tag">Auditoría: El eje mensual muestra `(Blank)` por timestamps con nanosegundos (.000000000) no unidos al calendario; corregido en Python/SQL/M.</span>
+          </div>
+        </article>
+
+        <article class="view-card">
+          <img src="../assets/powerbi/08_mapa_geoespacial_severidad.jpg" alt="Distribución geoespacial por coordenadas y severidad" onclick="zoom(this)" />
+          <div class="view-body">
+            <div class="view-title">Vista 8 · Distribución Geoespacial de Puntos Críticos (Req. 10)</div>
+            <p class="view-desc">
+              Mapa de burbujas por coordenadas exactas (`Start_Lat`, `Start_Lng`) y desglose proporcional de `Severity` (1–4),
+              evidenciando corredores urbanos críticos en California, Florida, Texas y el corredor atlántico Noreste.
+            </p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="dax" class="panel">
+      <h2 class="section-title">Catálogo de Medidas DAX del Modelo</h2>
+      <div class="dax-grid">
+        <div class="dax-card">
+          <h3>Total Accidentes</h3>
+          <pre>Total Accidentes = COUNTROWS(Accidents)</pre>
+          <p>Cuenta cada registro único respetando los filtros de estado, ciudad, clima, fecha y severidad.</p>
+        </div>
+        <div class="dax-card">
+          <h3>Accidentes FinDeSemana</h3>
+          <pre>Accidentes FinDeSemana =
+CALCULATE(
+    [Total Accidentes],
+    WEEKDAY(Accidents[Start_Time], 2) IN {6, 7}
+)</pre>
+          <p>Aísla los siniestros ocurridos en sábado (6) y domingo (7) para comparar movilidad recreativa frente a laboral.</p>
+        </div>
+        <div class="dax-card">
+          <h3>Accidentes YTD</h3>
+          <pre>Accidentes YTD =
+TOTALYTD(
+    [Total Accidentes],
+    Dim_Calendario[Date]
+)</pre>
+          <p>Acumula los eventos desde el 1 de enero hasta la última fecha del contexto anual activo (2023).</p>
+        </div>
+        <div class="dax-card">
+          <h3>Duración Promedio y Mediana</h3>
+          <pre>Duración Promedio = AVERAGE(Accidents[Duracion_Min])
+Duración Mediana = MEDIAN(Accidents[Duracion_Min])</pre>
+          <p>Contrasta la media afectada por cierres viales extremos (444 min) frente al valor típico central (75 min).</p>
+        </div>
+        <div class="dax-card">
+          <h3>Var MoM %</h3>
+          <pre>Var MoM % =
+DIVIDE(
+    [Total Accidentes] - [Accidentes Mes Anterior],
+    [Accidentes Mes Anterior],
+    0
+)</pre>
+          <p>Mide el crecimiento porcentual mes contra mes usando <code>DATEADD(..., -1, MONTH)</code>.</p>
+        </div>
+        <div class="dax-card">
+          <h3>Tasa x 100k Habitantes (Demográfica)</h3>
+          <pre>Tasa x 100k Hab =
+DIVIDE(
+    [Total Accidentes] * 100000,
+    MAX(Dim_Demografia[Population_2023]),
+    0
+)</pre>
+          <p>Normaliza la carga accidental de cada estado respecto a su población oficial según el Censo de EE.UU.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="pq" class="panel">
+      <h2 class="section-title">Pipeline ETL en Power Query (Lenguaje M)</h2>
+      <p style="color: var(--muted); margin-bottom: 0.75rem;">
+        Código fuente completo disponible en <a href="power_query_etl.pq">powerbi/power_query_etl.pq</a>.
+      </p>
+      <div class="code-box"><pre>let
+    OrigenRaw = Csv.Document(File.Contents("data\US_Accidents_March23.csv"),
+        [Delimiter=",", Columns=46, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    Encabezados = Table.PromoteHeaders(OrigenRaw, [PromoteAllScalars=true]),
+    TiposCambiados = Table.TransformColumnTypes(Encabezados, {
+        {"ID", type text}, {"Severity", Int64.Type}, {"Start_Time", type datetime},
+        {"End_Time", type datetime}, {"Start_Lat", type number}, {"Start_Lng", type number},
+        {"State", type text}, {"City", type text}, {"Weather_Condition", type text}
+    }, "en-US"),
+    ConDuracionMin = Table.AddColumn(TiposCambiados, "Duracion_Min",
+        each Duration.TotalMinutes([End_Time] - [Start_Time]), type number),
+    ConClimaGrupo = Table.AddColumn(ConDuracionMin, "Clima_Grupo", each
+        let w = Text.Lower(Text.Trim(if [Weather_Condition] = null then "" else [Weather_Condition]))
+        in if Text.Contains(w, "snow") or Text.Contains(w, "ice") then "Nieve/Hielo"
+           else if Text.Contains(w, "rain") or Text.Contains(w, "thunder") then "Lluvia"
+           else if Text.Contains(w, "fog") or Text.Contains(w, "haze") then "Niebla"
+           else if Text.Contains(w, "cloud") or Text.Contains(w, "overcast") then "Nublado"
+           else if Text.Contains(w, "clear") or Text.Contains(w, "fair") then "Despejado"
+           else "Otro", type text)
+in
+    ConClimaGrupo</pre></div>
+    </section>
+
+    <section id="embed" class="panel">
+      <div class="embed-box">
+        <h2 class="section-title" style="margin-top:0;">Despliegue Interactivo Power BI Service (Publish to Web)</h2>
+        <p style="color: var(--muted);">
+          Si publicaste tu archivo <code>.pbix</code> en Power BI Service (<em>Archivo → Insertar informe → Publicar en la Web</em>),
+          pega la URL de inserción aquí para visualizar el tablero en vivo dentro de esta misma página HTML:
+        </p>
+        <div class="embed-controls">
+          <input id="pbiUrl" type="url" placeholder="https://app.powerbi.com/view?r=..." />
+          <button onclick="cargarIframe()">Cargar Tablero en Vivo</button>
+        </div>
+        <iframe id="pbiFrame" title="Power BI Report Live" allowfullscreen="true"></iframe>
+      </div>
+    </section>
+  </main>
+
+  <div id="lightbox" class="lightbox" onclick="this.classList.remove('open')">
+    <img id="lightboxImg" src="" alt="Vista ampliada" />
+  </div>
+
+  <footer>
+    Proyecto 3 · Análisis de Accidentes de Tránsito en Zonas Urbanas · Dataset Kaggle US Accidents (2016–2023)
+  </footer>
+
+  <script>
+    function showTab(id, btn) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      btn.classList.add('active');
+    }
+    function zoom(img) {
+      document.getElementById('lightboxImg').src = img.src;
+      document.getElementById('lightbox').classList.add('open');
+    }
+    function cargarIframe() {
+      const url = document.getElementById('pbiUrl').value.trim();
+      if (!url) return alert('Ingresa una URL válida de Power BI Publish to Web.');
+      const frame = document.getElementById('pbiFrame');
+      frame.src = url;
+      frame.style.display = 'block';
+    }
+  </script>
+</body>
+</html>

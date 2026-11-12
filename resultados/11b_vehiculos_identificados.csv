@@ -1,0 +1,8 @@
+vehicle_type,total_accidentes,pct_sobre_total,severidad_promedio,pct_graves,duracion_media_min,pct_identificados
+Automóvil / Multivehículo,45195,0.58,2.474,43.02,88.81,66.22
+Camión / Tráiler,16389,0.21,2.521,39.67,124.95,24.01
+Peatón involucrado,2559,0.03,2.066,5.2,63.04,3.75
+Autobús,1502,0.02,2.041,5.06,94.03,2.2
+Motocicleta,1136,0.01,2.178,14.88,87.41,1.66
+SUV / Van / Pickup,1008,0.01,2.012,1.09,158.2,1.48
+Bicicleta,463,0.01,2.0,1.51,74.36,0.68

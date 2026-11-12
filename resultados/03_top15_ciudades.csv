@@ -1,0 +1,16 @@
+city,state,total_accidentes,pct_nacional,severidad_promedio,accidentes_graves
+Miami,FL,186768,2.42,2.101,16814
+Houston,TX,169428,2.19,2.183,30498
+Los Angeles,CA,156491,2.02,2.234,35866
+Charlotte,NC,138345,1.79,2.042,7740
+Dallas,TX,130303,1.69,2.263,34142
+Orlando,FL,109690,1.42,2.068,7080
+Austin,TX,96604,1.25,2.089,8916
+Raleigh,NC,86066,1.11,2.093,8513
+Nashville,TN,72670,0.94,2.141,10972
+Baton Rouge,LA,71588,0.93,2.083,6827
+Atlanta,GA,68154,0.88,2.536,33842
+Sacramento,CA,66264,0.86,2.1,7097
+San Diego,CA,55504,0.72,2.223,12131
+Phoenix,AZ,53701,0.69,2.16,9968
+Minneapolis,MN,51488,0.67,2.243,12457

@@ -1,0 +1,5 @@
+severity,total_accidentes,pct_total,distancia_media_mi,duracion_media_bruta_min,duracion_media_depurada_min,mediana_bruta_min,mediana_depurada_min
+1,67366,0.87,0.115,53.78,45.73,44.75,44.75
+2,6156981,79.67,0.565,485.44,114.69,77.57,77.43
+3,1299337,16.81,0.424,74.81,67.78,44.4,44.4
+4,204710,2.65,1.496,1685.35,185.9,128.45,126.97

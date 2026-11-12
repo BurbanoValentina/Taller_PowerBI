@@ -1,0 +1,8 @@
+day_of_week_num,day_name,tipo_dia,total_accidentes,pct_total,severidad_promedio
+1,Domingo,Fin de Semana,562744,7.28,2.259
+2,Lunes,Día Laboral,1210921,15.67,2.209
+3,Martes,Día Laboral,1290929,16.7,2.205
+4,Miércoles,Día Laboral,1312389,16.98,2.203
+5,Jueves,Día Laboral,1316229,17.03,2.204
+6,Viernes,Día Laboral,1366499,17.68,2.207
+7,Sábado,Fin de Semana,668683,8.65,2.241

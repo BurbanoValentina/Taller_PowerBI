@@ -1,0 +1,16 @@
+comparacion,grupo_a,grupo_b,dif_medias,ic95_inf,ic95_sup,q_tukey,p_valor,significativo_005
+Lluvia vs Despejado,Despejado,Lluvia,0.0618,0.0599,0.0637,128.28,0.0,True
+Niebla vs Despejado,Despejado,Niebla,-0.0055,-0.0087,-0.0023,6.98,1.1849725178758597e-05,True
+Nieve/Hielo vs Despejado,Despejado,Nieve/Hielo,0.0529,0.0495,0.0563,63.53,0.0,True
+Nublado vs Despejado,Despejado,Nublado,0.0501,0.049,0.0512,186.39,0.0,True
+Otro vs Despejado,Despejado,Otro,0.0682,0.0648,0.0716,81.23,0.0,True
+Niebla vs Lluvia,Lluvia,Niebla,-0.0673,-0.0709,-0.0637,76.03,0.0,True
+Nieve/Hielo vs Lluvia,Lluvia,Nieve/Hielo,-0.0089,-0.0126,-0.0052,9.62,1.5411749654248297e-10,True
+Nublado vs Lluvia,Lluvia,Nublado,-0.0117,-0.0137,-0.0097,24.15,0.0,True
+Otro vs Lluvia,Lluvia,Otro,0.0064,0.0026,0.0102,6.87,1.7421627777958193e-05,True
+Nieve/Hielo vs Niebla,Niebla,Nieve/Hielo,0.0584,0.0539,0.0629,52.35,0.0,True
+Nublado vs Niebla,Niebla,Nublado,0.0556,0.0524,0.0588,70.41,0.0,True
+Otro vs Niebla,Niebla,Otro,0.0737,0.0692,0.0782,65.76,0.0,True
+Nublado vs Nieve/Hielo,Nieve/Hielo,Nublado,-0.0028,-0.0062,0.0006,3.36,0.1656546516448204,False
+Otro vs Nieve/Hielo,Nieve/Hielo,Otro,0.0153,0.0107,0.0199,13.27,0.0,True
+Otro vs Nublado,Nublado,Otro,0.0181,0.0147,0.0215,21.52,0.0,True

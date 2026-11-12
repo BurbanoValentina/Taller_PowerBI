@@ -1,0 +1,24 @@
+# Datasets pesados y bases locales (>100 MB no admitidos en GitHub)
+data/US_Accidents*.csv
+data/*.zip
+data/*.db
+data/*.sqlite
+data/*.parquet
+
+# Entornos y cachés de Python / Spark
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+amb/
+.ipynb_checkpoints/
+spark-warehouse/
+metastore_db/
+derby.log
+*.log
+
+# Temporales de Office / OS
+~$*.docx
+~$*.pptx
+.DS_Store
+Thumbs.db

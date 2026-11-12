@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Informe Técnico — Proyecto 3: US Accidents</title>
+  <style>
+    @page { size: A4; margin: 16mm 15mm; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; color: #1e293b; max-width: 980px; margin: 0 auto; padding: 24px; line-height: 1.55; font-size: 10.5pt; }
+    h1 { color: #0f172a; border-bottom: 3px solid #0284c7; padding-bottom: 8px; font-size: 19pt; margin-top: 0; }
+    h2 { color: #0369a1; border-bottom: 1px solid #cbd5e1; padding-bottom: 4px; margin-top: 22px; page-break-after: avoid; font-size: 14pt; }
+    h3 { color: #0f172a; margin-top: 14px; page-break-after: avoid; font-size: 11.5pt; }
+    h4 { color: #334155; margin-top: 12px; page-break-after: avoid; font-size: 10.5pt; }
+    p { margin: 7px 0; }
+    ul, ol { margin: 6px 0 10px 22px; }
+    li { margin: 4px 0; }
+    code { background: #f1f5f9; padding: 1px 5px; border-radius: 4px; font-family: Consolas, monospace; font-size: 9pt; color: #0f172a; }
+    pre { background: #0f172a; color: #e2e8f0; padding: 10px 14px; border-radius: 6px; overflow-x: auto; font-size: 8.5pt; line-height: 1.45; page-break-inside: avoid; }
+    pre code { background: transparent; color: #e2e8f0; padding: 0; }
+    table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 8.8pt; page-break-inside: avoid; }
+    th { background: #0f172a; color: #fff; text-align: left; padding: 6px 8px; }
+    td { border: 1px solid #cbd5e1; padding: 5px 8px; }
+    tr:nth-child(even) td { background: #f8fafc; }
+    figure { margin: 12px 0; text-align: center; page-break-inside: avoid; }
+    figure img { max-width: 96%; max-height: 400px; border: 1px solid #cbd5e1; border-radius: 6px; }
+    figcaption { font-size: 8.6pt; color: #475569; margin-top: 4px; font-style: italic; }
+    hr { border: none; border-top: 1px solid #e2e8f0; margin: 18px 0; }
+  </style>
+</head>
+<body>
+<h1>Informe Técnico — Proyecto 3: Análisis de Accidentes de Tránsito en Zonas Urbanas (EE.UU., 2016–2023)</h1>
+<p><strong>Fuente de Datos:</strong> Kaggle <em>US Accidents (2016–2023)</em> — <code>sobhanmoosavi/us-accidents</code> (<code>US_Accidents_March23.csv</code>) + Enriquecimiento Demográfico del Censo de EE.UU. (<code>us_state_demographics.csv</code>).</p>
+<p><strong>Herramientas:</strong> Python 3.13 (Pandas, PyArrow, NumPy, SciPy, Matplotlib, Seaborn), PySpark / Spark SQL, SQLite 3, Power Query (Lenguaje M) y Microsoft Power BI Desktop (DAX).</p>
+<hr />
+<h2>1. Objetivos del Proyecto</h2>
+<h3>1.1 Objetivo General</h3>
+<p>Integrar datos abiertos de accidentes de tránsito en zonas urbanas y corredores viales de Estados Unidos con variables climáticas, de infraestructura vial y demográficas, con el fin de identificar patrones temporales, factores críticos de severidad y puntos geoespaciales de alta concentración mediante un flujo reproducible ETL + SQL + Power BI + ANOVA.</p>
+<h3>1.2 Objetivos Específicos</h3>
+<ol>
+<li><strong>Diseñar e implementar un pipeline ETL híbrido (Python/PyArrow, PySpark, SQLite y Power Query M)</strong> capaz de procesar <strong>7,728,394 registros</strong> y ~3.06 GB de texto, normalizando <em>timestamps</em> con nanosegundos, filtrando valores atípicos y enriqueciendo cada incidente con variables climáticas, viales, vehiculares y poblacionales.</li>
+<li><strong>Responder los 10 requerimientos analíticos de negocio</strong> mediante consultas SQL reproducibles y visualizaciones estadísticas en Python, cubriendo distribución geográfica, horarios pico, días críticos, severidad, clima, vías peligrosas, duración, estacionalidad y tipos de vehículo.</li>
+<li><strong>Documentar y auditar el tablero interactivo desarrollado en Power BI</strong>, detallando el lenguaje M, las medidas DAX empleadas y el contraste técnico entre las métricas del dashboard y la depuración en Python/SQL.</li>
+<li><strong>Evaluar estadísticamente mediante pruebas ANOVA unifactoriales, factoriales y post-hoc (Tukey-Kramer HSD / Kruskal-Wallis)</strong> si la duración del incidente y la severidad difieren significativamente según el nivel de gravedad, la condición climática y la franja horaria.</li>
+</ol>
+<hr />
+<h2>2. Descripción del Proceso ETL e Implementación (Python, SQL, PySpark, Power Query)</h2>
+<p>El pipeline ETL se diseñó bajo una arquitectura de procesamiento por bloques (<em>streaming</em> de 500,000 filas por lote) en <code>src/etl_us_accidents.py</code>, complementada con una versión distribuida en <code>src/etl_pyspark.py</code>, las consultas analíticas en <code>sql/queries_analisis.sql</code> y el script de Power Query M en <code>powerbi/power_query_etl.pq</code>.</p>
+<h3>2.1 Extracción</h3>
+<ul>
+<li><strong>Fuente principal:</strong> <code>US_Accidents_March23.csv</code> (46 columnas originales, <strong>7,728,394 registros</strong>, período <code>2016-01-14 20:18:33</code> a <code>2023-03-31 23:30:00</code>).</li>
+<li><strong>Fuente demográfica complementaria:</strong> <code>data/us_state_demographics.csv</code> con estimaciones poblacionales oficiales 2023 del Censo de EE.UU., superficie en millas cuadradas, densidad poblacional y región censal (<em>South, West, Midwest, Northeast</em>) para los 50 estados + D.C.</li>
+</ul>
+<h3>2.2 Limpieza y Calidad de Datos (Auditoría Real)</h3>
+<p>Durante la fase de transformación se detectaron y resolvieron problemas críticos de calidad de datos:</p>
+<table><thead><tr><th>Hallazgo / Métrica de Auditoría</th><th>Cantidad Observada</th><th>Decisión ETL Aplicada</th></tr></thead><tbody>
+<tr><td>Registros brutos extraídos</td><td><strong>7,728,394</strong></td><td>Lectura íntegra por bloques de 500k registros sin muestreo destructivo.</td></tr>
+<tr><td>Registros únicos tras deduplicación por <code>ID</code></td><td><strong>7,728,394</strong></td><td>Se eliminaron <code>0</code> duplicados; 100% de integridad por clave.</td></tr>
+<tr><td><em>Timestamps</em> con sufijo de nanosegundos (<code>.000000000</code>)</td><td><strong>743,166</strong></td><td>Recorte y parseo estricto <code>yyyy-MM-dd HH:mm:ss</code> (<code>Start_Time</code> y <code>End_Time</code>).</td></tr>
+<tr><td>Valores nulos en <code>Weather_Condition</code></td><td><strong>173,459</strong></td><td>Imputación semántica a la categoría <code>&quot;Otro&quot;</code> para no perder registros en análisis generales.</td></tr>
+<tr><td>Valores nulos en <code>Street</code> / <code>City</code></td><td><code>10,869</code> / <code>253</code></td><td>Etiquetado explícito como <code>&quot;Sin dato&quot;</code> y exclusión solo en rankings de calles/ciudades.</td></tr>
+<tr><td><em>Outliers</em> extremos de duración (<code>&gt; 1,440 min</code> / 24h)</td><td><strong>34,981</strong></td><td>Preservación en <code>duration_raw_min</code> (para auditoría Power BI) y depuración en <code>duration_clean_min</code> (<code>≤ 24h</code>).</td></tr>
+</tbody></table>
+<h3>2.3 Ingeniería de Variables y Enriquecimiento</h3>
+<ul>
+<li><strong>Agrupación climática (<code>weather_group</code>):</strong> Mapeo de más de 140 cadenas originales en inglés a 6 categorías analíticas estandarizadas en español: <code>Despejado</code>, <code>Nublado</code>, <code>Lluvia</code>, <code>Niebla</code>, <code>Nieve/Hielo</code> y <code>Otro</code>.</li>
+<li><strong>Clasificación vial (<code>road_type</code>):</strong> Expresiones regulares C++ (PyArrow RE2) sobre <code>Street</code> para distinguir <code>Autopista / Interstate</code> (<code>I-95</code>, <code>Fwy</code>, <code>Expy</code>), <code>Carretera / Highway</code> (<code>US-</code>, <code>SR-</code>, <code>Hwy</code>), <code>Avenida / Boulevard</code> y <code>Calle / Vía Urbana</code>.</li>
+<li><strong>Extracción de tipo de vehículo (<code>vehicle_type</code>):</strong> El dataset original no posee columna nativa de vehículo; mediante NLP/RE2 sobre <code>Description</code> se extrajeron menciones explícitas de <code>Automóvil / Multivehículo</code>, <code>Camión / Tráiler</code>, <code>Peatón involucrado</code>, <code>Autobús</code>, <code>Motocicleta</code>, <code>SUV / Van / Pickup</code> y <code>Bicicleta</code>, <strong>filtrando falsos positivos toponímicos de EE.UU.</strong> como <code>&quot;I-80 Bus&quot;</code> (Business Route), <code>&quot;Van Ness Ave&quot;</code>, <code>&quot;Van Buren St&quot;</code>, <code>&quot;Auto Mall Pkwy&quot;</code> y <code>&quot;Truck Route&quot;</code>.</li>
+<li><strong>Carga Analítica:</strong> Exportación columnar comprimida a <code>data/us_accidents_clean.parquet</code> y carga relacional indexada en SQLite (<code>data/us_accidents.db</code> con tablas <code>accidents</code> y <code>dim_demographics</code>).</li>
+</ul>
+<h3>2.4 Extractos de Implementación ETL (Python, SQL y Power Query M)</h3>
+<pre><code>
+# src/etl_us_accidents.py — Normalización temporal y outliers por bloques de 500k filas
+audit[&quot;dotted_timestamps_fixed&quot;] += int(st_str.str.contains(&quot;.&quot;, regex=False).sum())
+start_dt = pd.to_datetime(st_str.str.slice(0, 19), format=&quot;%Y-%m-%d %H:%M:%S&quot;, errors=&quot;coerce&quot;)
+dur_raw = (end_dt - start_dt).dt.total_seconds() / 60.0
+dur_clean = dur_raw.mask(dur_raw &gt; 1440.0, np.nan)
+</code></pre>
+<pre><code>
+-- sql/queries_analisis.sql — Tasa demográfica x100k habitantes y variación MoM con función ventana LAG()
+SELECT a.state, d.state_name, COUNT(*) AS total_accidentes,
+       ROUND(COUNT(*) * 100000.0 / d.population_2023, 2) AS tasa_x_100k_hab
+FROM accidents a LEFT JOIN dim_demographics d ON a.state = d.state
+GROUP BY a.state, d.state_name, d.population_2023 ORDER BY total_accidentes DESC;
+</code></pre>
+<pre><code>
+// powerbi/power_query_etl.pq — Agrupación climática y cruce demográfico en Lenguaje M
+JoinDemografia = Table.NestedJoin(ConVehiculo, {&quot;State&quot;}, DemografiaTyped, {&quot;State&quot;}, &quot;DimDemografia&quot;, JoinKind.LeftOuter),
+ExpandDemografia = Table.ExpandTableColumn(JoinDemografia, &quot;DimDemografia&quot;, {&quot;State_Name&quot;, &quot;Region&quot;, &quot;Population_2023&quot;, &quot;Density_Per_SqMi&quot;})
+</code></pre>
+<hr />
+<h2>3. Exploración de Datos y Respuesta a los 10 Requerimientos Analíticos</h2>
+<h3>3.1 Requerimiento 1: Frecuencia de Accidentes por Estado, Ciudad y Tasa Demográfica</h3>
+<p>El dataset cubre <strong>49 entidades</strong> (48 estados contiguos + D.C.) y <strong>13,679 ciudades</strong>.</p>
+<ul>
+<li><strong>Por volumen absoluto</strong>, lidera <strong>California (<code>1,741,433</code>, <code>22.53%</code>)</strong>, seguida de Florida (<code>880,192</code>), Texas (<code>582,837</code>), Carolina del Sur (<code>382,557</code>) y Nueva York (<code>347,960</code>).</li>
+<li><strong>Por ciudad urbana</strong>, encabeza <strong>Miami, FL (<code>186,768</code>)</strong>, seguida por Houston, TX (<code>169,428</code>) y Los Angeles, CA (<code>156,491</code>).</li>
+<li><strong>Integración demográfica (Tasa por 100,000 habitantes):</strong> Al normalizar por población del Censo 2023, <strong>Carolina del Sur (<code>7,119</code> por 100k hab.)</strong> y <strong>Oregón (<code>4,244</code> por 100k hab.)</strong> superan ampliamente en incidencia per cápita a Texas (<code>1,911</code>) y Nueva York (<code>1,778</code>), demostrando la importancia del cruce demográfico.</li>
+</ul>
+<p><strong>Top 10 Estados por Frecuencia y Tasa Demográfica:</strong></p>
+<table><thead><tr><th>Estado</th><th>Nombre</th><th>Región</th><th>Accidentes</th><th>% Nacional</th><th>Población 2023</th><th>Tasa x 100k Hab.</th><th>Sev. Prom.</th></tr></thead><tbody>
+<tr><td>CA</td><td>California</td><td>West</td><td>1,741,433</td><td>22.53%</td><td>38,965,193</td><td>4,469.2</td><td>2.166</td></tr>
+<tr><td>FL</td><td>Florida</td><td>South</td><td>880,192</td><td>11.39%</td><td>22,610,726</td><td>3,892.8</td><td>2.14</td></tr>
+<tr><td>TX</td><td>Texas</td><td>South</td><td>582,837</td><td>7.54%</td><td>30,503,301</td><td>1,910.7</td><td>2.224</td></tr>
+<tr><td>SC</td><td>South Carolina</td><td>South</td><td>382,557</td><td>4.95%</td><td>5,373,555</td><td>7,119.2</td><td>2.111</td></tr>
+<tr><td>NY</td><td>New York</td><td>Northeast</td><td>347,960</td><td>4.5%</td><td>19,571,216</td><td>1,777.9</td><td>2.26</td></tr>
+<tr><td>NC</td><td>North Carolina</td><td>South</td><td>338,199</td><td>4.38%</td><td>10,835,491</td><td>3,121.2</td><td>2.134</td></tr>
+<tr><td>VA</td><td>Virginia</td><td>South</td><td>303,301</td><td>3.92%</td><td>8,715,698</td><td>3,479.9</td><td>2.279</td></tr>
+<tr><td>PA</td><td>Pennsylvania</td><td>Northeast</td><td>296,620</td><td>3.84%</td><td>12,961,683</td><td>2,288.4</td><td>2.206</td></tr>
+<tr><td>MN</td><td>Minnesota</td><td>Midwest</td><td>192,084</td><td>2.49%</td><td>5,737,915</td><td>3,347.6</td><td>2.162</td></tr>
+<tr><td>OR</td><td>Oregon</td><td>West</td><td>179,660</td><td>2.32%</td><td>4,233,358</td><td>4,243.9</td><td>2.112</td></tr>
+</tbody></table>
+<p><figure><img src="../assets/charts/01_top10_estados_y_ciudades.png" alt="Top 10 Estados y Ciudades" /><figcaption>Top 10 Estados y Ciudades</figcaption></figure></p>
+<p><figure><img src="../assets/charts/02_demografia_tasa_y_regiones.png" alt="Tasa Demográfica y Regiones" /><figcaption>Tasa Demográfica y Regiones</figcaption></figure></p>
+<hr />
+<h3>3.2 Requerimientos 2 y 6: Hora del Día y Días de la Semana Críticos</h3>
+<ul>
+<li><strong>Hora pico principal:</strong> Las <strong>07:00 horas</strong> (<code>587,472</code> eventos, <code>7.6%</code>), dentro de un patrón <strong>bimodal laboral</strong> con pico matutino (07:00–08:59h) y pico vespertino sostenido (15:00–17:59h).</li>
+<li><strong>Día de la semana crítico:</strong> El <strong>Viernes</strong> concentra el mayor volumen (<code>1,366,499</code> eventos, <code>17.68%</code>), mientras que sábado y domingo reducen drásticamente la frecuencia conjunta a <code>1,231,427</code> eventos (<code>15.93%</code>), aunque presentan <strong>mayor severidad promedio</strong> (<code>2.259</code> en domingo y <code>2.241</code> en sábado frente a <code>2.203–2.209</code> entre semana) debido a velocidades más altas y menor congestión.</li>
+</ul>
+<table><thead><tr><th>Día</th><th>Tipo de Día</th><th>Total Accidentes</th><th>% Total</th><th>Severidad Promedio</th></tr></thead><tbody>
+<tr><td>Domingo</td><td>Fin de Semana</td><td>562,744</td><td>7.28%</td><td>2.259</td></tr>
+<tr><td>Lunes</td><td>Día Laboral</td><td>1,210,921</td><td>15.67%</td><td>2.209</td></tr>
+<tr><td>Martes</td><td>Día Laboral</td><td>1,290,929</td><td>16.7%</td><td>2.205</td></tr>
+<tr><td>Miércoles</td><td>Día Laboral</td><td>1,312,389</td><td>16.98%</td><td>2.203</td></tr>
+<tr><td>Jueves</td><td>Día Laboral</td><td>1,316,229</td><td>17.03%</td><td>2.204</td></tr>
+<tr><td>Viernes</td><td>Día Laboral</td><td>1,366,499</td><td>17.68%</td><td>2.207</td></tr>
+<tr><td>Sábado</td><td>Fin de Semana</td><td>668,683</td><td>8.65%</td><td>2.241</td></tr>
+</tbody></table>
+<p><figure><img src="../assets/charts/03_patron_horario_y_semanal.png" alt="Patrón Horario y Semanal" /><figcaption>Patrón Horario y Semanal</figcaption></figure></p>
+<p><figure><img src="../assets/charts/04_heatmap_dia_hora.png" alt="Mapa de Calor Día x Hora" /><figcaption>Mapa de Calor Día x Hora</figcaption></figure></p>
+<hr />
+<h3>3.3 Requerimientos 3 y 7: Análisis por Severidad y Duración del Incidente</h3>
+<p>La severidad (escala 1 = impacto mínimo en tráfico a 4 = impacto severo/cierre prolongado) muestra una fuerte concentración en el <strong>Nivel 2 (79.67%)</strong>, seguido del <strong>Nivel 3 (16.81%)</strong>.</p>
+<p>En cuanto a la <strong>duración</strong>, el contraste entre la media bruta (<strong>444.4 min</strong>, coincidente con los <code>444</code> min del tablero Power BI) y la mediana global (<strong>74.8 min</strong>, coincidente con <code>75</code> min en Power BI) evidencia una <strong>severa asimetría positiva</strong> generada por <code>34,981</code> cierres viales extremos superiores a 24 horas. Al depurar a incidentes <code>≤ 24h</code>, la duración media operativa desciende a <strong>108.0 min</strong> (<code>45.7 min</code> en Sev. 1, <code>114.7 min</code> en Sev. 2, <code>67.8 min</code> en Sev. 3 por despeje rápido prioritario en autopistas y <code>185.9 min</code> en Sev. 4 por cierres prolongados).</p>
+<table><thead><tr><th>Severidad</th><th>Total Accidentes</th><th>% Total</th><th>Dist. Media (mi)</th><th>Media Bruta (min)</th><th>Media Depurada ≤24h (min)</th><th>Mediana Depurada (min)</th></tr></thead><tbody>
+<tr><td>1</td><td>67,366</td><td>0.87%</td><td>0.115</td><td>53.78</td><td>45.73</td><td>44.75</td></tr>
+<tr><td>2</td><td>6,156,981</td><td>79.67%</td><td>0.565</td><td>485.44</td><td>114.69</td><td>77.43</td></tr>
+<tr><td>3</td><td>1,299,337</td><td>16.81%</td><td>0.424</td><td>74.81</td><td>67.78</td><td>44.4</td></tr>
+<tr><td>4</td><td>204,710</td><td>2.65%</td><td>1.496</td><td>1685.35</td><td>185.9</td><td>126.97</td></tr>
+</tbody></table>
+<p><figure><img src="../assets/charts/05_severidad_y_duracion.png" alt="Severidad y Duración" /><figcaption>Severidad y Duración</figcaption></figure></p>
+<hr />
+<h3>3.4 Requerimiento 4: Relación con Condiciones Climáticas</h3>
+<p>Aunque en volumen absoluto predominan condiciones <strong>Despejadas (44.06%)</strong> y <strong>Nubladas (40.94%)</strong> (porque representan la mayor exposición diaria de tráfico), el porcentaje de incidentes graves (<code>Severidad 3 y 4</code>) aumenta en condiciones adversas como <strong>Lluvia (<code>22.76%</code>)</strong> y <strong>Nieve/Hielo (<code>19.95%</code>)</strong> frente a <strong>Despejado (<code>16.91%</code>)</strong>, cayendo además la visibilidad promedio de <code>9.85 mi</code> a <code>6.15 mi</code> (Lluvia), <code>3.08 mi</code> (Niebla) y <code>2.85 mi</code> (Nieve/Hielo).</p>
+<table><thead><tr><th>Grupo Climático</th><th>Total Accidentes</th><th>% Total</th><th>% Graves (Sev 3–4)</th><th>Visibilidad Media (mi)</th><th>Temp. Media (°F)</th></tr></thead><tbody>
+<tr><td>Despejado</td><td>3,405,216</td><td>44.06%</td><td>16.91%</td><td>9.85</td><td>63.53</td></tr>
+<tr><td>Nublado</td><td>3,163,750</td><td>40.94%</td><td>21.65%</td><td>9.57</td><td>62.5</td></tr>
+<tr><td>Lluvia</td><td>600,536</td><td>7.77%</td><td>22.76%</td><td>6.15</td><td>59.88</td></tr>
+<tr><td>Niebla</td><td>202,142</td><td>2.62%</td><td>16.11%</td><td>3.08</td><td>56.1</td></tr>
+<tr><td>Nieve/Hielo</td><td>179,916</td><td>2.33%</td><td>19.95%</td><td>2.85</td><td>25.07</td></tr>
+<tr><td>Otro</td><td>176,834</td><td>2.29%</td><td>21.53%</td><td>8.72</td><td>56.32</td></tr>
+</tbody></table>
+<p><figure><img src="../assets/charts/06_clima_y_severidad.png" alt="Clima y Severidad" /><figcaption>Clima y Severidad</figcaption></figure></p>
+<hr />
+<h3>3.5 Requerimiento 5: Tipos de Vía Más Peligrosos e Infraestructura Vial</h3>
+<ul>
+<li><strong>Por categoría de vía:</strong> Las <strong>Calles / Vías Urbanas</strong> agrupan alta capilaridad (<code>31.07%</code>), pero las <strong>Autopistas / Interstates</strong> (<code>34.29%</code>) concentran la <strong>mayor proporción de accidentes graves (<code>32.44%</code> en Severidad 3–4)</strong> frente al <code>10.17%</code> en calles urbanas, debido a velocidades de circulación y colisiones múltiples.</li>
+<li><strong>Top 10 vías específicas reales:</strong> A diferencia del orden alfabético descendente visto en una captura de Power BI (<code>Zuni Rd SE</code>), el ranking real por volumen está encabezado por grandes arterias interestatales (<code>I-95 N</code> con <code>78,430</code>, <code>I-95 S</code> con <code>74,528</code> y <code>I-5 N</code> con <code>71,968</code>).</li>
+<li><strong>Infraestructura vial:</strong> Los accidentes se concentran alrededor de <strong>Semáforos (<code>Traffic_Signal</code>: 1,143,772)</strong>, <strong>Cruces Peatonales (<code>Crossing</code>: 873,763)</strong> e <strong>Intersecciones (<code>Junction</code>: 571,342)</strong>.</li>
+</ul>
+<table><thead><tr><th>Tipo de Vía</th><th>Total Accidentes</th><th>% Total</th><th>Severidad Promedio</th><th>% Graves (Sev 3–4)</th></tr></thead><tbody>
+<tr><td>Autopista / Interstate</td><td>2,649,733</td><td>34.29%</td><td>2.344</td><td>32.44%</td></tr>
+<tr><td>Calle / Vía Urbana</td><td>2,401,533</td><td>31.07%</td><td>2.113</td><td>10.17%</td></tr>
+<tr><td>Avenida / Boulevard</td><td>994,796</td><td>12.87%</td><td>2.118</td><td>11.55%</td></tr>
+<tr><td>Otra Vía</td><td>855,568</td><td>11.07%</td><td>2.206</td><td>18.47%</td></tr>
+<tr><td>Carretera / Highway</td><td>815,895</td><td>10.56%</td><td>2.2</td><td>15.43%</td></tr>
+<tr><td>Sin dato</td><td>10,869</td><td>0.14%</td><td>2.157</td><td>12.3%</td></tr>
+</tbody></table>
+<p><figure><img src="../assets/charts/07_tipos_via_y_top10_calles.png" alt="Tipos de Vía y Top 10 Calles" /><figcaption>Tipos de Vía y Top 10 Calles</figcaption></figure></p>
+<hr />
+<h3>3.6 Requerimiento 8: Tendencias Anuales y Mensuales</h3>
+<p>El volumen anual muestra un crecimiento sostenido desde <strong>2016 (<code>410,821</code>)</strong> hasta alcanzar su máximo histórico en <strong>2022 (<code>1,762,452</code> accidentes)</strong> —impulsado por el retorno pleno de la movilidad post-pandemia y mayor cobertura de sensores—, cerrando <strong>2023</strong> con cobertura parcial de tres meses hasta marzo (<code>246,633</code>). No obstante, la severidad promedio descendió de <code>2.389</code> (2017) a <code>2.072</code> (2022) al ampliarse la detección de incidentes leves/moderados. Estacionalmente, <strong>Diciembre (<code>847,343</code>, <code>10.96%</code>)</strong> y el último trimestre (octubre–diciembre) concentran la mayor accidentalidad por menor luz diurna y clima invernal.</p>
+<p><figure><img src="../assets/charts/08_tendencias_anuales_y_mensuales.png" alt="Tendencias Anuales y Mensuales" /><figcaption>Tendencias Anuales y Mensuales</figcaption></figure></p>
+<hr />
+<h3>3.7 Requerimiento 9: Accidentes por Tipo de Vehículo Involucrado</h3>
+<p>Dado que Kaggle no incluye columna estructurada de vehículo (~99.1% de las descripciones detallan únicamente la vía y afectación de carriles), el módulo NLP extrajo menciones explícitas válidas en <strong><code>68,252</code> descripciones (<code>0.88%</code> del total)</strong> tras excluir falsos positivos toponímicos:</p>
+<ul>
+<li><strong>Automóvil / Multivehículo</strong> encabeza los casos identificados (<code>45,195</code>; <code>66.22%</code>) seguido por <strong>Camión / Tráiler</strong> (<code>16,389</code>; <code>24.01%</code>), <strong>Peatón involucrado</strong> (<code>2,559</code>; <code>3.75%</code>), <strong>Autobús</strong> (<code>1,502</code>; <code>2.20%</code>) y <strong>Motocicleta</strong> (<code>1,136</code>; <code>1.66%</code>).</li>
+<li>Destacan <strong>Camión / Tráiler</strong> (<code>2.521</code> mayor severidad promedio, <code>39.67%</code> graves, <code>124.95 min</code>) y <strong>Automóvil / Multivehículo</strong> (<code>43.02%</code> graves, <code>2.474</code> sev. prom.) por ocurrir predominantemente en autopistas de alta velocidad, mientras <strong>Motocicleta</strong> alcanza <code>14.88%</code> de eventos graves y <strong>SUV / Van / Pickup</strong> registra la mayor duración media (<code>158.20 min</code>).</li>
+</ul>
+<table><thead><tr><th>Tipo de Vehículo (NLP Description)</th><th>Accidentes</th><th>% sobre Identificados</th><th>Severidad Prom.</th><th>% Graves (S3–4)</th><th>Duración Media (min)</th></tr></thead><tbody>
+<tr><td>Automóvil / Multivehículo</td><td>45,195</td><td>66.22%</td><td>2.474</td><td>43.02%</td><td>88.81</td></tr>
+<tr><td>Camión / Tráiler</td><td>16,389</td><td>24.01%</td><td>2.521</td><td>39.67%</td><td>124.95</td></tr>
+<tr><td>Peatón involucrado</td><td>2,559</td><td>3.75%</td><td>2.066</td><td>5.2%</td><td>63.04</td></tr>
+<tr><td>Autobús</td><td>1,502</td><td>2.2%</td><td>2.041</td><td>5.06%</td><td>94.03</td></tr>
+<tr><td>Motocicleta</td><td>1,136</td><td>1.66%</td><td>2.178</td><td>14.88%</td><td>87.41</td></tr>
+<tr><td>SUV / Van / Pickup</td><td>1,008</td><td>1.48%</td><td>2.012</td><td>1.09%</td><td>158.2</td></tr>
+<tr><td>Bicicleta</td><td>463</td><td>0.68%</td><td>2.0</td><td>1.51%</td><td>74.36</td></tr>
+</tbody></table>
+<p><figure><img src="../assets/charts/09_tipos_de_vehiculo.png" alt="Tipos de Vehículo" /><figcaption>Tipos de Vehículo</figcaption></figure></p>
+<hr />
+<h3>3.8 Requerimiento 10: Distribución Geoespacial y Matriz de Correlación</h3>
+<p>El análisis por cuadrículas de <code>0.1° × 0.1°</code> confirma clústeres urbanos críticos en <strong>Los Ángeles / Sur de California</strong>, <strong>Miami–Orlando–Tampa (Florida)</strong>, <strong>Houston–Dallas–Austin (Texas)</strong>, <strong>Charlotte–Raleigh (Carolina del Norte)</strong> y el <strong>corredor atlántico Noreste (NY–NJ–PA)</strong>.</p>
+<p><figure><img src="../assets/charts/10_distribucion_geoespacial_hotspots.png" alt="Distribución Geoespacial" /><figcaption>Distribución Geoespacial</figcaption></figure></p>
+<p><figure><img src="../assets/charts/14_matriz_correlacion_exploratoria.png" alt="Matriz de Correlación Exploratoria" /><figcaption>Matriz de Correlación Exploratoria</figcaption></figure></p>
+<hr />
+<h2>4. Visualizaciones de Power BI y Auditoría del Tablero</h2>
+<p>El tablero desarrollado en Power BI Desktop (<code>LO DE POWER BI YA ESTA FINALIZADO</code>, desplegado en <code>powerbi/dashboard_powerbi.html</code>) organiza la exploración en 8 vistas interactivas:</p>
+<table><thead><tr><th>#</th><th>Vista en Power BI</th><th>Captura</th><th>Hallazgo y Auditoría Técnica</th></tr></thead><tbody>
+<tr><td>1</td><td>Frecuencia por Estado y Top 10 Ciudades</td><td><code>assets/powerbi/01_frecuencia_estado_top10_ciudades.jpg</code></td><td>Mapa coroplético + ranking Miami, Houston, Los Angeles, Charlotte, Dallas, Orlando, Austin, Raleigh, Nashville y Baton Rouge.</td></tr>
+<tr><td>2</td><td>KPIs, Patrón Horario y Día de la Semana</td><td><code>assets/powerbi/02_kpis_hora_dia_semana.jpg</code></td><td>Suma semanal exacta <code>7,728K</code> (viernes <code>1,366K</code> líder). Card <code>FinDeSemana=366</code> afectada por contexto YTD 2023 (total real Sáb+Dom: <code>1,231,427</code>).</td></tr>
+<tr><td>3</td><td>Severidad y Clima al 100%</td><td><code>assets/powerbi/03_severidad_clima_porcentaje.jpg</code></td><td>Donut exacto <code>7728K</code> (<code>67K / 6157K / 1299K / 205K</code>) y proporción de severidad 3 superior al 20% en Lluvia y Otro.</td></tr>
+<tr><td>4</td><td>Accidentes por Clima y Estado</td><td><code>assets/powerbi/04_accidentes_clima_estado.jpg</code></td><td>Totales exactos: Despejado <code>3,369,545</code>, Nublado <code>2,915,115</code>, Otro <code>623,936</code>, Lluvia <code>478,761</code>, Niebla <code>191,668</code>, Nieve/Hielo <code>149,367</code>.</td></tr>
+<tr><td>5</td><td>Top 10 Vías Más Peligrosas</td><td><code>assets/powerbi/05_top10_vias_peligrosas.png</code></td><td>Se detectó ordenamiento alfabético descendente (<code>Zuni Rd SE</code>) en lugar de por volumen (<code>I-95 N</code>, <code>I-95 S</code>), corregido en Python/SQL.</td></tr>
+<tr><td>6</td><td>Duración Promedio vs Mediana</td><td><code>assets/powerbi/06_duracion_promedio_severidad.png</code></td><td>Media <code>444 min</code> vs Mediana <code>75 min</code>, confirmando sesgo por outliers extremos en Severidad 4 (<code>1,685 min</code>).</td></tr>
+<tr><td>7</td><td>Tendencias Anuales/Mensuales y Var MoM %</td><td><code>assets/powerbi/07_tendencias_anuales_mensuales_mom.png</code></td><td>Presencia de <code>(Blank)</code> en eje mensual por fechas con nanosegundos <code>.000000000</code> no parseadas; corregido en ETL Python/M.</td></tr>
+<tr><td>8</td><td>Mapa Geoespacial de Severidad</td><td><code>assets/powerbi/08_mapa_geoespacial_severidad.jpg</code></td><td>Burbujas por <code>Start_Lat</code>/<code>Start_Lng</code> con segmentadores interactivos de Estado y Severidad.</td></tr>
+</tbody></table>
+<h4>Capturas del Tablero Power BI</h4>
+<p><figure><img src="../assets/powerbi/01_frecuencia_estado_top10_ciudades.jpg" alt="PBI Vista 1: Frecuencia por Estado y Top 10 Ciudades" /><figcaption>PBI Vista 1: Frecuencia por Estado y Top 10 Ciudades</figcaption></figure></p>
+<p><figure><img src="../assets/powerbi/02_kpis_hora_dia_semana.jpg" alt="PBI Vista 2: KPIs, Patrón Horario y Semanal" /><figcaption>PBI Vista 2: KPIs, Patrón Horario y Semanal</figcaption></figure></p>
+<p><figure><img src="../assets/powerbi/03_severidad_clima_porcentaje.jpg" alt="PBI Vista 3: Severidad y Clima 100%" /><figcaption>PBI Vista 3: Severidad y Clima 100%</figcaption></figure></p>
+<p><figure><img src="../assets/powerbi/04_accidentes_clima_estado.jpg" alt="PBI Vista 4: Accidentes por Clima y Estado" /><figcaption>PBI Vista 4: Accidentes por Clima y Estado</figcaption></figure></p>
+<p><figure><img src="../assets/powerbi/05_top10_vias_peligrosas.png" alt="PBI Vista 5: Top 10 Vías Más Peligrosas" /><figcaption>PBI Vista 5: Top 10 Vías Más Peligrosas</figcaption></figure></p>
+<p><figure><img src="../assets/powerbi/06_duracion_promedio_severidad.png" alt="PBI Vista 6: Duración Promedio vs Mediana" /><figcaption>PBI Vista 6: Duración Promedio vs Mediana</figcaption></figure></p>
+<p><figure><img src="../assets/powerbi/07_tendencias_anuales_mensuales_mom.png" alt="PBI Vista 7: Tendencias Anuales/Mensuales y Var MoM" /><figcaption>PBI Vista 7: Tendencias Anuales/Mensuales y Var MoM</figcaption></figure></p>
+<p><figure><img src="../assets/powerbi/08_mapa_geoespacial_severidad.jpg" alt="PBI Vista 8: Mapa Geoespacial de Severidad" /><figcaption>PBI Vista 8: Mapa Geoespacial de Severidad</figcaption></figure></p>
+<hr />
+<h2>5. Medidas DAX Explicadas</h2>
+<p>Las definiciones completas y comentadas se encuentran en <a href="../powerbi/dax_measures.md"><code>powerbi/dax_measures.md</code></a>:</p>
+<ol>
+<li><strong><code>Total Accidentes = COUNTROWS(Accidents)</code></strong>: Métrica base aditiva sobre la tabla de hechos que responde a cualquier segmentación de Estado, Ciudad, Clima, Fecha o Severidad (<code>7,728,394</code> / <code>8M</code>).</li>
+<li><strong><code>Accidentes FinDeSemana = CALCULATE([Total Accidentes], WEEKDAY(Accidents[Start_Time], 2) IN {6, 7})</code></strong>: Modifica el contexto de filtro para aislar sábados y domingos (<code>1,231,427</code> reales en todo el histórico).</li>
+<li><strong><code>Accidentes YTD = TOTALYTD([Total Accidentes], Dim_Calendario[Date])</code></strong>: Acumulado anual hasta la fecha máxima del contexto activo (marzo de 2023).</li>
+<li><strong><code>Var MoM % = DIVIDE([Total Accidentes] - [Accidentes Mes Anterior], [Accidentes Mes Anterior], 0)</code></strong>: Variación porcentual mensual usando <code>DATEADD(..., -1, MONTH)</code> protegida ante división por cero.</li>
+<li><strong><code>Duración Promedio</code> (<code>AVERAGE</code>) y <code>Duración Mediana</code> (<code>MEDIAN</code>)</strong>: Par de medidas que diagnostican la asimetría de los tiempos de atención (<code>444 min</code> vs <code>75 min</code>).</li>
+<li><strong><code>Tasa x 100k Hab = DIVIDE([Total Accidentes] * 100000, MAX(Dim_Demografia[Population_2023]), 0)</code></strong>: Medida de normalización demográfica integrada mediante la tabla del Censo EE.UU.</li>
+</ol>
+<hr />
+<h2>6. Resultados y Visualización del ANOVA</h2>
+<p>Se ejecutaron <strong>4 modelos ANOVA exactos</strong> sobre la totalidad de los registros depurados en Python (<code>src/anova_analysis.py</code>), acompañados de verificación no paramétrica (<strong>Kruskal-Wallis H</strong>), prueba de homogeneidad de varianzas (<strong>Levene</strong>), corrección ante heterocedasticidad (<strong>Welch ANOVA</strong>) y contrastes múltiples post-hoc (<strong>Tukey-Kramer HSD</strong>).</p>
+<h3>6.1 Tabla Resumen de Pruebas ANOVA</h3>
+<table><thead><tr><th>Modelo Evaluado</th><th>N Válido</th><th>F Clásico</th><th>p-valor</th><th>η² (Tamaño del Efecto)</th><th>F Welch</th><th>Kruskal-Wallis H</th><th>Conclusión Estadística</th></tr></thead><tbody>
+<tr><td><strong>1. Duración (≤24h) ~ Severidad</strong></td><td>7,693,413</td><td><strong>86,966.69</strong></td><td><code>&lt; 1e-300</code></td><td><strong>0.03280</strong></td><td>183,159.02</td><td>580,876.4</td><td>Se rechaza H₀: la severidad determina diferencias altamente significativas en duración.</td></tr>
+<tr><td><strong>2. Severidad ~ Clima</strong></td><td>7,728,394</td><td><strong>4,663.12</strong></td><td><code>&lt; 1e-300</code></td><td><strong>0.00301</strong></td><td>4,684.43</td><td>29,167.6</td><td>Se rechaza H₀: el clima altera significativamente la severidad promedio (Lluvia/Otro más graves).</td></tr>
+<tr><td><strong>3. Severidad ~ Franja Horaria</strong></td><td>7,728,394</td><td><strong>726.09</strong></td><td><code>&lt; 1e-300</code></td><td><strong>0.00038</strong></td><td>678.00</td><td>1,419.8</td><td>Se rechaza H₀: la franja horaria (noche/madrugada vs pico) incide en la severidad.</td></tr>
+</tbody></table>
+<h3>6.2 ANOVA Factorial de 2 Vías: <code>Severidad ~ Clima × Franja Horaria</code></h3>
+<table><thead><tr><th>Fuente de Variación</th><th>gl (df)</th><th>Suma de Cuadrados (Tipo III)</th><th>Cuadrado Medio</th><th>F</th><th>p-valor</th><th>Eta Parcial²</th></tr></thead><tbody>
+<tr><td>weather_group</td><td>5</td><td>4,551.10</td><td>910.2196</td><td>3,843.64</td><td>0.00e+00</td><td>0.002481</td></tr>
+<tr><td>time_slot</td><td>4</td><td>69.25</td><td>17.3122</td><td>73.11</td><td>4.68e-62</td><td>0.000038</td></tr>
+<tr><td>weather_group × time_slot (Interacción)</td><td>20</td><td>414.78</td><td>20.7392</td><td>87.58</td><td>0.00e+00</td><td>0.000227</td></tr>
+<tr><td>Error (Dentro de celdas)</td><td>7,728,364</td><td>1,830,167.66</td><td>0.2368</td><td>-</td><td>-</td><td>-</td></tr>
+</tbody></table>
+<h3>6.3 Estadísticos por Grupo (Duración ~ Severidad y Severidad ~ Clima)</h3>
+<table><thead><tr><th>Severidad</th><th>n</th><th>Media (min)</th><th>Desv. Est.</th><th>Mediana (min)</th><th>IC 95%</th></tr></thead><tbody>
+<tr><td>1</td><td>67,356</td><td>45.7278</td><td>29.1757</td><td>44.75</td><td>[45.5075, 45.9482]</td></tr>
+<tr><td>2</td><td>6,126,329</td><td>114.6924</td><td>127.8555</td><td>77.43</td><td>[114.5911, 114.7936]</td></tr>
+<tr><td>3</td><td>1,298,989</td><td>67.7818</td><td>80.5894</td><td>44.4</td><td>[67.6432, 67.9204]</td></tr>
+<tr><td>4</td><td>200,739</td><td>185.9008</td><td>158.3213</td><td>126.97</td><td>[185.2082, 186.5934]</td></tr>
+</tbody></table>
+<table><thead><tr><th>Clima</th><th>n</th><th>Severidad Media</th><th>Desv. Est.</th><th>IC 95%</th></tr></thead><tbody>
+<tr><td>Despejado</td><td>3,405,216</td><td>2.1844</td><td>0.4714</td><td>[2.1839, 2.1849]</td></tr>
+<tr><td>Lluvia</td><td>600,536</td><td>2.2462</td><td>0.5007</td><td>[2.2449, 2.2474]</td></tr>
+<tr><td>Niebla</td><td>202,142</td><td>2.1789</td><td>0.4487</td><td>[2.177, 2.1809]</td></tr>
+<tr><td>Nieve/Hielo</td><td>179,916</td><td>2.2373</td><td>0.5094</td><td>[2.2349, 2.2396]</td></tr>
+<tr><td>Nublado</td><td>3,163,750</td><td>2.2345</td><td>0.4985</td><td>[2.234, 2.2351]</td></tr>
+<tr><td>Otro</td><td>176,834</td><td>2.2526</td><td>0.5339</td><td>[2.2501, 2.2551]</td></tr>
+</tbody></table>
+<p><strong>Interpretación Práctica vs. Significancia Estadística:</strong></p>
+<p>Dado el tamaño masivo (N &gt; 7.7 millones), casi cualquier diferencia mínima produce p &lt; 0.001; por ello es fundamental analizar el <strong>tamaño del efecto (η²)</strong> y las <strong>diferencias reales de medias (Tukey HSD)</strong>:</p>
+<ul>
+<li>En <strong>Duración ~ Severidad</strong>, el efecto es <strong>sustantivo</strong> (η² = 0.0328): los incidentes de Severidad 4 promedian <code>185.9 min</code> (vs <code>45.7 min</code> en Severidad 1 y <code>67.8 min</code> en Severidad 3), resultando <strong>todos los 6 pares significativos</strong> en Tukey-Kramer HSD (<code>p &lt; 1e-300</code>).</li>
+<li>En <strong>Severidad ~ Clima × Franja Horaria</strong>, tanto los efectos principales como la <strong>interacción son significativos</strong> (<code>F = 87.58</code>, <code>p &lt; 1e-300</code>): mientras en <code>Lluvia</code>, <code>Nublado</code> y <code>Despejado</code> la severidad máxima ocurre en horario nocturno (<code>20–23h</code>, ej. Lluvia nocturna = <code>2.279</code> vs pico tarde = <code>2.230</code>), en <code>Nieve/Hielo</code> y <code>Niebla</code> la gravedad promedio es mayor al mediodía (<code>2.259</code> y <code>2.203</code>).</li>
+</ul>
+<p><figure><img src="../assets/charts/11_anova_duracion_severidad.png" alt="ANOVA Duración vs Severidad" /><figcaption>ANOVA Duración vs Severidad</figcaption></figure></p>
+<p><figure><img src="../assets/charts/12_anova_severidad_clima_franja.png" alt="ANOVA Severidad Clima y Franja" /><figcaption>ANOVA Severidad Clima y Franja</figcaption></figure></p>
+<p><figure><img src="../assets/charts/13_anova_tukey_posthoc.png" alt="ANOVA Tukey Post-Hoc" /><figcaption>ANOVA Tukey Post-Hoc</figcaption></figure></p>
+<hr />
+<h2>7. Conclusiones y Recomendaciones</h2>
+<ol>
+<li><strong>Concentración geográfica y enfoque per cápita:</strong> California (<code>1.74M</code>), Florida (<code>880K</code>) y Texas (<code>583K</code>) lideran en volumen bruto, mientras Miami, Houston y Los Ángeles encabezan la siniestralidad urbana. Sin embargo, al cruzar con datos demográficos del Censo, Carolina del Sur (<code>7,119</code> x 100k hab.) y Oregón (<code>4,244</code> x 100k hab.) superan en riesgo relativo per cápita, demostrando que la planeación vial debe combinar volumen absoluto e incidencia ajustada por población.</li>
+<li><strong>Ventana crítica de gestión del tráfico:</strong> La siniestralidad alcanza su máximo los <strong>viernes (<code>17.68%</code>)</strong> y entre las <strong>15:00 y 18:00 horas</strong> (pico vespertino), siendo las <strong>autopistas interestatales</strong> (<code>I-95</code>, <code>I-5</code>, <code>I-10</code>) los corredores con mayor proporción de eventos graves (<code>32.44%</code> en <code>Sev 3–4</code>).</li>
+<li><strong>Impacto climático y nocturno:</strong> Aunque el 85% de los incidentes ocurre en clima despejado o nublado por mayor exposición vehicular, la <strong>lluvia (<code>22.76%</code> graves)</strong> y la <strong>nieve/hielo (<code>19.95%</code> graves)</strong> elevan de forma estadísticamente significativa la severidad promedio (ANOVA p &lt; 10⁻³⁰⁰), con interacción significativa según la franja horaria.</li>
+<li><strong>Control de calidad de datos y gobernanza BI:</strong> La auditoría conjunta Python + SQL + Power BI permitió detectar y corregir <em>timestamps</em> con nanosegundos (<code>.000000000</code>), separar <em>outliers</em> de duración superiores a 24 horas (explicando la brecha media <code>444 min</code> vs mediana <code>75 min</code>), corregir el orden alfabético en el ranking de vías y depurar falsos positivos toponímicos en la extracción NLP de tipos de vehículo.</li>
+</ol>
+</body>
+</html>

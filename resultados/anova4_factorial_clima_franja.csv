@@ -1,0 +1,5 @@
+fuente,df,ss_tipo_iii,ms,F,p_valor,eta_parcial_sq
+weather_group,5,4551.1,910.2196,3843.64,0.0,0.002481
+time_slot,4,69.25,17.3122,73.11,4.683851172380173e-62,3.8e-05
+weather_group × time_slot (Interacción),20,414.78,20.7392,87.58,0.0,0.000227
+Error (Dentro de celdas),7728364,1830167.66,0.2368,,,

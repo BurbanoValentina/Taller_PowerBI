@@ -1,0 +1,1047 @@
+{
+  "auditoria": {
+    "total_registros": 7728394,
+    "estados_cubiertos": 49,
+    "ciudades_cubiertas": 13679,
+    "fecha_inicio": "2016-01-14 20:18:33",
+    "fecha_fin": "2023-03-31 23:30:00",
+    "duracion_media_bruta_min": 444.42,
+    "duracion_media_depurada_min": 108.03,
+    "severidad_media_global": 2.212
+  },
+  "top5_estados": [
+    {
+      "state": "CA",
+      "state_name": "California",
+      "region": "West",
+      "population_2023": 38965193,
+      "density_per_sqmi": 250.13,
+      "total_accidentes": 1741433,
+      "pct_nacional": 22.53,
+      "tasa_x_100k_hab": 4469.2,
+      "severidad_promedio": 2.166
+    },
+    {
+      "state": "FL",
+      "state_name": "Florida",
+      "region": "South",
+      "population_2023": 22610726,
+      "density_per_sqmi": 421.65,
+      "total_accidentes": 880192,
+      "pct_nacional": 11.39,
+      "tasa_x_100k_hab": 3892.81,
+      "severidad_promedio": 2.14
+    },
+    {
+      "state": "TX",
+      "state_name": "Texas",
+      "region": "South",
+      "population_2023": 30503301,
+      "density_per_sqmi": 116.77,
+      "total_accidentes": 582837,
+      "pct_nacional": 7.54,
+      "tasa_x_100k_hab": 1910.73,
+      "severidad_promedio": 2.224
+    },
+    {
+      "state": "SC",
+      "state_name": "South Carolina",
+      "region": "South",
+      "population_2023": 5373555,
+      "density_per_sqmi": 178.76,
+      "total_accidentes": 382557,
+      "pct_nacional": 4.95,
+      "tasa_x_100k_hab": 7119.25,
+      "severidad_promedio": 2.111
+    },
+    {
+      "state": "NY",
+      "state_name": "New York",
+      "region": "Northeast",
+      "population_2023": 19571216,
+      "density_per_sqmi": 415.3,
+      "total_accidentes": 347960,
+      "pct_nacional": 4.5,
+      "tasa_x_100k_hab": 1777.92,
+      "severidad_promedio": 2.26
+    }
+  ],
+  "top5_estados_tasa": [
+    {
+      "state": "SC",
+      "state_name": "South Carolina",
+      "region": "South",
+      "population_2023": 5373555,
+      "density_per_sqmi": 178.76,
+      "total_accidentes": 382557,
+      "pct_nacional": 4.95,
+      "tasa_x_100k_hab": 7119.25,
+      "severidad_promedio": 2.111
+    },
+    {
+      "state": "CA",
+      "state_name": "California",
+      "region": "West",
+      "population_2023": 38965193,
+      "density_per_sqmi": 250.13,
+      "total_accidentes": 1741433,
+      "pct_nacional": 22.53,
+      "tasa_x_100k_hab": 4469.2,
+      "severidad_promedio": 2.166
+    },
+    {
+      "state": "OR",
+      "state_name": "Oregon",
+      "region": "West",
+      "population_2023": 4233358,
+      "density_per_sqmi": 44.1,
+      "total_accidentes": 179660,
+      "pct_nacional": 2.32,
+      "tasa_x_100k_hab": 4243.91,
+      "severidad_promedio": 2.112
+    },
+    {
+      "state": "FL",
+      "state_name": "Florida",
+      "region": "South",
+      "population_2023": 22610726,
+      "density_per_sqmi": 421.65,
+      "total_accidentes": 880192,
+      "pct_nacional": 11.39,
+      "tasa_x_100k_hab": 3892.81,
+      "severidad_promedio": 2.14
+    },
+    {
+      "state": "VA",
+      "state_name": "Virginia",
+      "region": "South",
+      "population_2023": 8715698,
+      "density_per_sqmi": 220.71,
+      "total_accidentes": 303301,
+      "pct_nacional": 3.92,
+      "tasa_x_100k_hab": 3479.94,
+      "severidad_promedio": 2.279
+    }
+  ],
+  "top10_ciudades": [
+    {
+      "city": "Miami",
+      "state": "FL",
+      "total_accidentes": 186768,
+      "pct_nacional": 2.42,
+      "severidad_promedio": 2.101,
+      "accidentes_graves": 16814
+    },
+    {
+      "city": "Houston",
+      "state": "TX",
+      "total_accidentes": 169428,
+      "pct_nacional": 2.19,
+      "severidad_promedio": 2.183,
+      "accidentes_graves": 30498
+    },
+    {
+      "city": "Los Angeles",
+      "state": "CA",
+      "total_accidentes": 156491,
+      "pct_nacional": 2.02,
+      "severidad_promedio": 2.234,
+      "accidentes_graves": 35866
+    },
+    {
+      "city": "Charlotte",
+      "state": "NC",
+      "total_accidentes": 138345,
+      "pct_nacional": 1.79,
+      "severidad_promedio": 2.042,
+      "accidentes_graves": 7740
+    },
+    {
+      "city": "Dallas",
+      "state": "TX",
+      "total_accidentes": 130303,
+      "pct_nacional": 1.69,
+      "severidad_promedio": 2.263,
+      "accidentes_graves": 34142
+    },
+    {
+      "city": "Orlando",
+      "state": "FL",
+      "total_accidentes": 109690,
+      "pct_nacional": 1.42,
+      "severidad_promedio": 2.068,
+      "accidentes_graves": 7080
+    },
+    {
+      "city": "Austin",
+      "state": "TX",
+      "total_accidentes": 96604,
+      "pct_nacional": 1.25,
+      "severidad_promedio": 2.089,
+      "accidentes_graves": 8916
+    },
+    {
+      "city": "Raleigh",
+      "state": "NC",
+      "total_accidentes": 86066,
+      "pct_nacional": 1.11,
+      "severidad_promedio": 2.093,
+      "accidentes_graves": 8513
+    },
+    {
+      "city": "Nashville",
+      "state": "TN",
+      "total_accidentes": 72670,
+      "pct_nacional": 0.94,
+      "severidad_promedio": 2.141,
+      "accidentes_graves": 10972
+    },
+    {
+      "city": "Baton Rouge",
+      "state": "LA",
+      "total_accidentes": 71588,
+      "pct_nacional": 0.93,
+      "severidad_promedio": 2.083,
+      "accidentes_graves": 6827
+    }
+  ],
+  "regiones": [
+    {
+      "region": "South",
+      "estados": 17,
+      "total_accidentes": 3415252,
+      "pct_total": 44.19,
+      "severidad_promedio": 2.198
+    },
+    {
+      "region": "West",
+      "estados": 11,
+      "total_accidentes": 2463506,
+      "pct_total": 31.88,
+      "severidad_promedio": 2.177
+    },
+    {
+      "region": "Northeast",
+      "estados": 9,
+      "total_accidentes": 949108,
+      "pct_total": 12.28,
+      "severidad_promedio": 2.251
+    },
+    {
+      "region": "Midwest",
+      "estados": 12,
+      "total_accidentes": 900528,
+      "pct_total": 11.65,
+      "severidad_promedio": 2.322
+    }
+  ],
+  "por_hora": [
+    {
+      "hour": 0,
+      "total_accidentes": 112378,
+      "pct_total": 1.45,
+      "severidad_promedio": 2.219
+    },
+    {
+      "hour": 1,
+      "total_accidentes": 97071,
+      "pct_total": 1.26,
+      "severidad_promedio": 2.189
+    },
+    {
+      "hour": 2,
+      "total_accidentes": 93227,
+      "pct_total": 1.21,
+      "severidad_promedio": 2.206
+    },
+    {
+      "hour": 3,
+      "total_accidentes": 83863,
+      "pct_total": 1.09,
+      "severidad_promedio": 2.23
+    },
+    {
+      "hour": 4,
+      "total_accidentes": 159852,
+      "pct_total": 2.07,
+      "severidad_promedio": 2.234
+    },
+    {
+      "hour": 5,
+      "total_accidentes": 228182,
+      "pct_total": 2.95,
+      "severidad_promedio": 2.219
+    },
+    {
+      "hour": 6,
+      "total_accidentes": 405837,
+      "pct_total": 5.25,
+      "severidad_promedio": 2.209
+    },
+    {
+      "hour": 7,
+      "total_accidentes": 587472,
+      "pct_total": 7.6,
+      "severidad_promedio": 2.19
+    },
+    {
+      "hour": 8,
+      "total_accidentes": 577576,
+      "pct_total": 7.47,
+      "severidad_promedio": 2.191
+    },
+    {
+      "hour": 9,
+      "total_accidentes": 363034,
+      "pct_total": 4.7,
+      "severidad_promedio": 2.226
+    },
+    {
+      "hour": 10,
+      "total_accidentes": 342706,
+      "pct_total": 4.43,
+      "severidad_promedio": 2.22
+    },
+    {
+      "hour": 11,
+      "total_accidentes": 355040,
+      "pct_total": 4.59,
+      "severidad_promedio": 2.214
+    },
+    {
+      "hour": 12,
+      "total_accidentes": 355001,
+      "pct_total": 4.59,
+      "severidad_promedio": 2.216
+    },
+    {
+      "hour": 13,
+      "total_accidentes": 396445,
+      "pct_total": 5.13,
+      "severidad_promedio": 2.207
+    },
+    {
+      "hour": 14,
+      "total_accidentes": 448846,
+      "pct_total": 5.81,
+      "severidad_promedio": 2.2
+    },
+    {
+      "hour": 15,
+      "total_accidentes": 525855,
+      "pct_total": 6.8,
+      "severidad_promedio": 2.201
+    },
+    {
+      "hour": 16,
+      "total_accidentes": 581969,
+      "pct_total": 7.53,
+      "severidad_promedio": 2.205
+    },
+    {
+      "hour": 17,
+      "total_accidentes": 576015,
+      "pct_total": 7.45,
+      "severidad_promedio": 2.21
+    },
+    {
+      "hour": 18,
+      "total_accidentes": 432042,
+      "pct_total": 5.59,
+      "severidad_promedio": 2.228
+    },
+    {
+      "hour": 19,
+      "total_accidentes": 295121,
+      "pct_total": 3.82,
+      "severidad_promedio": 2.237
+    },
+    {
+      "hour": 20,
+      "total_accidentes": 225226,
+      "pct_total": 2.91,
+      "severidad_promedio": 2.247
+    },
+    {
+      "hour": 21,
+      "total_accidentes": 191452,
+      "pct_total": 2.48,
+      "severidad_promedio": 2.242
+    },
+    {
+      "hour": 22,
+      "total_accidentes": 167645,
+      "pct_total": 2.17,
+      "severidad_promedio": 2.241
+    },
+    {
+      "hour": 23,
+      "total_accidentes": 126539,
+      "pct_total": 1.64,
+      "severidad_promedio": 2.204
+    }
+  ],
+  "por_dia": [
+    {
+      "day_of_week_num": 1,
+      "day_name": "Domingo",
+      "tipo_dia": "Fin de Semana",
+      "total_accidentes": 562744,
+      "pct_total": 7.28,
+      "severidad_promedio": 2.259
+    },
+    {
+      "day_of_week_num": 2,
+      "day_name": "Lunes",
+      "tipo_dia": "Día Laboral",
+      "total_accidentes": 1210921,
+      "pct_total": 15.67,
+      "severidad_promedio": 2.209
+    },
+    {
+      "day_of_week_num": 3,
+      "day_name": "Martes",
+      "tipo_dia": "Día Laboral",
+      "total_accidentes": 1290929,
+      "pct_total": 16.7,
+      "severidad_promedio": 2.205
+    },
+    {
+      "day_of_week_num": 4,
+      "day_name": "Miércoles",
+      "tipo_dia": "Día Laboral",
+      "total_accidentes": 1312389,
+      "pct_total": 16.98,
+      "severidad_promedio": 2.203
+    },
+    {
+      "day_of_week_num": 5,
+      "day_name": "Jueves",
+      "tipo_dia": "Día Laboral",
+      "total_accidentes": 1316229,
+      "pct_total": 17.03,
+      "severidad_promedio": 2.204
+    },
+    {
+      "day_of_week_num": 6,
+      "day_name": "Viernes",
+      "tipo_dia": "Día Laboral",
+      "total_accidentes": 1366499,
+      "pct_total": 17.68,
+      "severidad_promedio": 2.207
+    },
+    {
+      "day_of_week_num": 7,
+      "day_name": "Sábado",
+      "tipo_dia": "Fin de Semana",
+      "total_accidentes": 668683,
+      "pct_total": 8.65,
+      "severidad_promedio": 2.241
+    }
+  ],
+  "ciclo_luz": [
+    {
+      "sunrise_sunset": "Day",
+      "total_accidentes": 5334553,
+      "pct_total": 69.03,
+      "severidad_promedio": 2.209
+    },
+    {
+      "sunrise_sunset": "Night",
+      "total_accidentes": 2370595,
+      "pct_total": 30.67,
+      "severidad_promedio": 2.219
+    },
+    {
+      "sunrise_sunset": "Sin dato",
+      "total_accidentes": 23246,
+      "pct_total": 0.3,
+      "severidad_promedio": 2.217
+    }
+  ],
+  "mediana_global_bruta_min": 74.83,
+  "mediana_global_depurada_min": 74.75,
+  "media_global_bruta_min": 444.42,
+  "media_global_depurada_min": 108.03,
+  "severidad": [
+    {
+      "severity": 1,
+      "total_accidentes": 67366,
+      "pct_total": 0.87,
+      "distancia_media_mi": 0.115,
+      "duracion_media_bruta_min": 53.78,
+      "duracion_media_depurada_min": 45.73,
+      "mediana_bruta_min": 44.75,
+      "mediana_depurada_min": 44.75
+    },
+    {
+      "severity": 2,
+      "total_accidentes": 6156981,
+      "pct_total": 79.67,
+      "distancia_media_mi": 0.565,
+      "duracion_media_bruta_min": 485.44,
+      "duracion_media_depurada_min": 114.69,
+      "mediana_bruta_min": 77.56999969482422,
+      "mediana_depurada_min": 77.43000030517578
+    },
+    {
+      "severity": 3,
+      "total_accidentes": 1299337,
+      "pct_total": 16.81,
+      "distancia_media_mi": 0.424,
+      "duracion_media_bruta_min": 74.81,
+      "duracion_media_depurada_min": 67.78,
+      "mediana_bruta_min": 44.400001525878906,
+      "mediana_depurada_min": 44.400001525878906
+    },
+    {
+      "severity": 4,
+      "total_accidentes": 204710,
+      "pct_total": 2.65,
+      "distancia_media_mi": 1.496,
+      "duracion_media_bruta_min": 1685.35,
+      "duracion_media_depurada_min": 185.9,
+      "mediana_bruta_min": 128.4499969482422,
+      "mediana_depurada_min": 126.97000122070312
+    }
+  ],
+  "clima": [
+    {
+      "weather_group": "Despejado",
+      "total_accidentes": 3405216,
+      "pct_total": 44.06,
+      "sev_1": 35054,
+      "sev_2": 2794392,
+      "sev_3": 488494,
+      "sev_4": 87276,
+      "pct_graves": 16.91,
+      "visibilidad_media_mi": 9.85,
+      "temperatura_media_f": 63.53
+    },
+    {
+      "weather_group": "Nublado",
+      "total_accidentes": 3163750,
+      "pct_total": 40.94,
+      "sev_1": 26065,
+      "sev_2": 2452646,
+      "sev_3": 601983,
+      "sev_4": 83056,
+      "pct_graves": 21.65,
+      "visibilidad_media_mi": 9.57,
+      "temperatura_media_f": 62.5
+    },
+    {
+      "weather_group": "Lluvia",
+      "total_accidentes": 600536,
+      "pct_total": 7.77,
+      "sev_1": 4210,
+      "sev_2": 459622,
+      "sev_3": 121362,
+      "sev_4": 15342,
+      "pct_graves": 22.76,
+      "visibilidad_media_mi": 6.15,
+      "temperatura_media_f": 59.88
+    },
+    {
+      "weather_group": "Niebla",
+      "total_accidentes": 202142,
+      "pct_total": 2.62,
+      "sev_1": 953,
+      "sev_2": 168614,
+      "sev_3": 28028,
+      "sev_4": 4547,
+      "pct_graves": 16.11,
+      "visibilidad_media_mi": 3.08,
+      "temperatura_media_f": 56.1
+    },
+    {
+      "weather_group": "Nieve/Hielo",
+      "total_accidentes": 179916,
+      "pct_total": 2.33,
+      "sev_1": 127,
+      "sev_2": 143903,
+      "sev_3": 28954,
+      "sev_4": 6932,
+      "pct_graves": 19.95,
+      "visibilidad_media_mi": 2.85,
+      "temperatura_media_f": 25.07
+    },
+    {
+      "weather_group": "Otro",
+      "total_accidentes": 176834,
+      "pct_total": 2.29,
+      "sev_1": 957,
+      "sev_2": 137804,
+      "sev_3": 30516,
+      "sev_4": 7557,
+      "pct_graves": 21.53,
+      "visibilidad_media_mi": 8.72,
+      "temperatura_media_f": 56.32
+    }
+  ],
+  "tipo_via": [
+    {
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 2649733,
+      "pct_total": 34.29,
+      "severidad_promedio": 2.344,
+      "pct_graves": 32.44
+    },
+    {
+      "road_type": "Calle / Vía Urbana",
+      "total_accidentes": 2401533,
+      "pct_total": 31.07,
+      "severidad_promedio": 2.113,
+      "pct_graves": 10.17
+    },
+    {
+      "road_type": "Avenida / Boulevard",
+      "total_accidentes": 994796,
+      "pct_total": 12.87,
+      "severidad_promedio": 2.118,
+      "pct_graves": 11.55
+    },
+    {
+      "road_type": "Otra Vía",
+      "total_accidentes": 855568,
+      "pct_total": 11.07,
+      "severidad_promedio": 2.206,
+      "pct_graves": 18.47
+    },
+    {
+      "road_type": "Carretera / Highway",
+      "total_accidentes": 815895,
+      "pct_total": 10.56,
+      "severidad_promedio": 2.2,
+      "pct_graves": 15.43
+    },
+    {
+      "road_type": "Sin dato",
+      "total_accidentes": 10869,
+      "pct_total": 0.14,
+      "severidad_promedio": 2.157,
+      "pct_graves": 12.3
+    }
+  ],
+  "top10_vias_reales": [
+    {
+      "street": "I-95 N",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 78430,
+      "severidad_promedio": 2.418,
+      "accidentes_graves": 31107
+    },
+    {
+      "street": "I-95 S",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 74528,
+      "severidad_promedio": 2.413,
+      "accidentes_graves": 28776
+    },
+    {
+      "street": "I-5 N",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 71968,
+      "severidad_promedio": 2.341,
+      "accidentes_graves": 24008
+    },
+    {
+      "street": "I-10 E",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 55573,
+      "severidad_promedio": 2.394,
+      "accidentes_graves": 21078
+    },
+    {
+      "street": "I-10 W",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 53725,
+      "severidad_promedio": 2.405,
+      "accidentes_graves": 20912
+    },
+    {
+      "street": "I-5 S",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 51781,
+      "severidad_promedio": 2.276,
+      "accidentes_graves": 13947
+    },
+    {
+      "street": "I-80 W",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 39662,
+      "severidad_promedio": 2.429,
+      "accidentes_graves": 16133
+    },
+    {
+      "street": "I-80 E",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 36113,
+      "severidad_promedio": 2.402,
+      "accidentes_graves": 13834
+    },
+    {
+      "street": "I-405 N",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 32364,
+      "severidad_promedio": 2.461,
+      "accidentes_graves": 14688
+    },
+    {
+      "street": "I-75 N",
+      "road_type": "Autopista / Interstate",
+      "total_accidentes": 28166,
+      "severidad_promedio": 2.538,
+      "accidentes_graves": 14233
+    }
+  ],
+  "infraestructura": {
+    "Semaforo": 1143772,
+    "Interseccion": 571342,
+    "Cruce_Peatonal": 873763,
+    "Senal_Pare": 214371,
+    "Estacion_Transito": 201901,
+    "Cruce_Ferroviario": 66979,
+    "Glorieta": 249
+  },
+  "anual": [
+    {
+      "year": 2016,
+      "total_accidentes": 410821,
+      "severidad_promedio": 2.377,
+      "accidentes_graves": 140570
+    },
+    {
+      "year": 2017,
+      "total_accidentes": 718093,
+      "severidad_promedio": 2.389,
+      "accidentes_graves": 255337
+    },
+    {
+      "year": 2018,
+      "total_accidentes": 893426,
+      "severidad_promedio": 2.385,
+      "accidentes_graves": 318499
+    },
+    {
+      "year": 2019,
+      "total_accidentes": 954303,
+      "severidad_promedio": 2.308,
+      "accidentes_graves": 265956
+    },
+    {
+      "year": 2020,
+      "total_accidentes": 1178913,
+      "severidad_promedio": 2.186,
+      "accidentes_graves": 216419
+    },
+    {
+      "year": 2021,
+      "total_accidentes": 1563753,
+      "severidad_promedio": 2.134,
+      "accidentes_graves": 178974
+    },
+    {
+      "year": 2022,
+      "total_accidentes": 1762452,
+      "severidad_promedio": 2.072,
+      "accidentes_graves": 121231
+    },
+    {
+      "year": 2023,
+      "total_accidentes": 246633,
+      "severidad_promedio": 2.057,
+      "accidentes_graves": 7061
+    }
+  ],
+  "mensual": [
+    {
+      "month": 1,
+      "month_name": "Enero",
+      "total_accidentes": 751946,
+      "pct_total": 9.73,
+      "severidad_promedio": 2.191
+    },
+    {
+      "month": 2,
+      "month_name": "Febrero",
+      "total_accidentes": 658984,
+      "pct_total": 8.53,
+      "severidad_promedio": 2.204
+    },
+    {
+      "month": 3,
+      "month_name": "Marzo",
+      "total_accidentes": 554595,
+      "pct_total": 7.18,
+      "severidad_promedio": 2.233
+    },
+    {
+      "month": 4,
+      "month_name": "Abril",
+      "total_accidentes": 587300,
+      "pct_total": 7.6,
+      "severidad_promedio": 2.216
+    },
+    {
+      "month": 5,
+      "month_name": "Mayo",
+      "total_accidentes": 558176,
+      "pct_total": 7.22,
+      "severidad_promedio": 2.221
+    },
+    {
+      "month": 6,
+      "month_name": "Junio",
+      "total_accidentes": 571373,
+      "pct_total": 7.39,
+      "severidad_promedio": 2.24
+    },
+    {
+      "month": 7,
+      "month_name": "Julio",
+      "total_accidentes": 512335,
+      "pct_total": 6.63,
+      "severidad_promedio": 2.243
+    },
+    {
+      "month": 8,
+      "month_name": "Agosto",
+      "total_accidentes": 599666,
+      "pct_total": 7.76,
+      "severidad_promedio": 2.237
+    },
+    {
+      "month": 9,
+      "month_name": "Septiembre",
+      "total_accidentes": 651381,
+      "pct_total": 8.43,
+      "severidad_promedio": 2.215
+    },
+    {
+      "month": 10,
+      "month_name": "Octubre",
+      "total_accidentes": 675130,
+      "pct_total": 8.74,
+      "severidad_promedio": 2.214
+    },
+    {
+      "month": 11,
+      "month_name": "Noviembre",
+      "total_accidentes": 760165,
+      "pct_total": 9.84,
+      "severidad_promedio": 2.193
+    },
+    {
+      "month": 12,
+      "month_name": "Diciembre",
+      "total_accidentes": 847343,
+      "pct_total": 10.96,
+      "severidad_promedio": 2.176
+    }
+  ],
+  "vehiculos": [
+    {
+      "vehicle_type": "No especificado",
+      "total_accidentes": 7660142,
+      "pct_sobre_total": 99.12,
+      "severidad_promedio": 2.21,
+      "pct_graves": 19.29,
+      "duracion_media_min": 108.12
+    },
+    {
+      "vehicle_type": "Automóvil / Multivehículo",
+      "total_accidentes": 45195,
+      "pct_sobre_total": 0.58,
+      "severidad_promedio": 2.474,
+      "pct_graves": 43.02,
+      "duracion_media_min": 88.81
+    },
+    {
+      "vehicle_type": "Camión / Tráiler",
+      "total_accidentes": 16389,
+      "pct_sobre_total": 0.21,
+      "severidad_promedio": 2.521,
+      "pct_graves": 39.67,
+      "duracion_media_min": 124.95
+    },
+    {
+      "vehicle_type": "Peatón involucrado",
+      "total_accidentes": 2559,
+      "pct_sobre_total": 0.03,
+      "severidad_promedio": 2.066,
+      "pct_graves": 5.2,
+      "duracion_media_min": 63.04
+    },
+    {
+      "vehicle_type": "Autobús",
+      "total_accidentes": 1502,
+      "pct_sobre_total": 0.02,
+      "severidad_promedio": 2.041,
+      "pct_graves": 5.06,
+      "duracion_media_min": 94.03
+    },
+    {
+      "vehicle_type": "Motocicleta",
+      "total_accidentes": 1136,
+      "pct_sobre_total": 0.01,
+      "severidad_promedio": 2.178,
+      "pct_graves": 14.88,
+      "duracion_media_min": 87.41
+    },
+    {
+      "vehicle_type": "SUV / Van / Pickup",
+      "total_accidentes": 1008,
+      "pct_sobre_total": 0.01,
+      "severidad_promedio": 2.012,
+      "pct_graves": 1.09,
+      "duracion_media_min": 158.2
+    },
+    {
+      "vehicle_type": "Bicicleta",
+      "total_accidentes": 463,
+      "pct_sobre_total": 0.01,
+      "severidad_promedio": 2.0,
+      "pct_graves": 1.51,
+      "duracion_media_min": 74.36
+    }
+  ],
+  "top15_hotspots": [
+    {
+      "lat_bin": 25.9,
+      "lng_bin": -80.2,
+      "state": "FL",
+      "ciudad_referencia": "Opa-Locka",
+      "total_accidentes": 53220,
+      "accidentes_graves": 7833,
+      "severidad_promedio": 2.163
+    },
+    {
+      "lat_bin": 34.0,
+      "lng_bin": -118.2,
+      "state": "CA",
+      "ciudad_referencia": "Vernon",
+      "total_accidentes": 39838,
+      "accidentes_graves": 7316,
+      "severidad_promedio": 2.187
+    },
+    {
+      "lat_bin": 25.7,
+      "lng_bin": -80.4,
+      "state": "FL",
+      "ciudad_referencia": "Miami",
+      "total_accidentes": 33737,
+      "accidentes_graves": 251,
+      "severidad_promedio": 2.009
+    },
+    {
+      "lat_bin": 35.2,
+      "lng_bin": -80.8,
+      "state": "NC",
+      "ciudad_referencia": "Township 1 Charlotte",
+      "total_accidentes": 33303,
+      "accidentes_graves": 999,
+      "severidad_promedio": 2.014
+    },
+    {
+      "lat_bin": 35.8,
+      "lng_bin": -78.6,
+      "state": "NC",
+      "ciudad_referencia": "Raleigh",
+      "total_accidentes": 33281,
+      "accidentes_graves": 3580,
+      "severidad_promedio": 2.099
+    },
+    {
+      "lat_bin": 32.8,
+      "lng_bin": -96.8,
+      "state": "TX",
+      "ciudad_referencia": "Northeast Dallas",
+      "total_accidentes": 32694,
+      "accidentes_graves": 8420,
+      "severidad_promedio": 2.257
+    },
+    {
+      "lat_bin": 40.8,
+      "lng_bin": -73.9,
+      "state": "NY",
+      "ciudad_referencia": "Woodside",
+      "total_accidentes": 31736,
+      "accidentes_graves": 9720,
+      "severidad_promedio": 2.321
+    },
+    {
+      "lat_bin": 33.9,
+      "lng_bin": -118.3,
+      "state": "CA",
+      "ciudad_referencia": "Torrance",
+      "total_accidentes": 31723,
+      "accidentes_graves": 7956,
+      "severidad_promedio": 2.255
+    },
+    {
+      "lat_bin": 34.0,
+      "lng_bin": -118.3,
+      "state": "CA",
+      "ciudad_referencia": "View Park",
+      "total_accidentes": 31397,
+      "accidentes_graves": 8516,
+      "severidad_promedio": 2.277
+    },
+    {
+      "lat_bin": 25.8,
+      "lng_bin": -80.3,
+      "state": "FL",
+      "ciudad_referencia": "West Miami",
+      "total_accidentes": 28297,
+      "accidentes_graves": 985,
+      "severidad_promedio": 2.041
+    },
+    {
+      "lat_bin": 34.1,
+      "lng_bin": -118.2,
+      "state": "CA",
+      "ciudad_referencia": "South Pasadena",
+      "total_accidentes": 27993,
+      "accidentes_graves": 5657,
+      "severidad_promedio": 2.21
+    },
+    {
+      "lat_bin": 30.4,
+      "lng_bin": -91.1,
+      "state": "LA",
+      "ciudad_referencia": "Baton Rouge",
+      "total_accidentes": 27183,
+      "accidentes_graves": 2425,
+      "severidad_promedio": 2.077
+    },
+    {
+      "lat_bin": 36.2,
+      "lng_bin": -86.8,
+      "state": "TN",
+      "ciudad_referencia": "Whites Creek",
+      "total_accidentes": 26743,
+      "accidentes_graves": 4624,
+      "severidad_promedio": 2.163
+    },
+    {
+      "lat_bin": 25.8,
+      "lng_bin": -80.2,
+      "state": "FL",
+      "ciudad_referencia": "North Bay Village",
+      "total_accidentes": 26584,
+      "accidentes_graves": 6089,
+      "severidad_promedio": 2.249
+    },
+    {
+      "lat_bin": 30.3,
+      "lng_bin": -97.7,
+      "state": "TX",
+      "ciudad_referencia": "Austin",
+      "total_accidentes": 25266,
+      "accidentes_graves": 3454,
+      "severidad_promedio": 2.135
+    }
+  ],
+  "elapsed_seconds": 3895.94
+}

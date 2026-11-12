@@ -1,0 +1,13 @@
+street,road_type,total_accidentes,severidad_promedio,accidentes_graves
+I-95 N,Autopista / Interstate,78430,2.418,31107
+I-95 S,Autopista / Interstate,74528,2.413,28776
+I-5 N,Autopista / Interstate,71968,2.341,24008
+I-10 E,Autopista / Interstate,55573,2.394,21078
+I-10 W,Autopista / Interstate,53725,2.405,20912
+I-5 S,Autopista / Interstate,51781,2.276,13947
+I-80 W,Autopista / Interstate,39662,2.429,16133
+I-80 E,Autopista / Interstate,36113,2.402,13834
+I-405 N,Autopista / Interstate,32364,2.461,14688
+I-75 N,Autopista / Interstate,28166,2.538,14233
+I-75 S,Autopista / Interstate,27546,2.525,13448
+I-90 E,Autopista / Interstate,26426,2.416,10489

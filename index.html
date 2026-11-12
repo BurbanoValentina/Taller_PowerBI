@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proyecto 3 — Análisis de Accidentes de Tránsito en Zonas Urbanas</title>
+  <style>
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #f1f5f9; margin: 0; padding: 2rem 1rem; line-height: 1.6; }
+    .wrap { max-width: 1020px; margin: 0 auto; }
+    h1 { font-size: 2rem; margin-bottom: 0.4rem; color: #38bdf8; }
+    p.lead { color: #94a3b8; margin-bottom: 2rem; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.25rem; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.35rem; transition: border-color 0.2s; }
+    .card:hover { border-color: #38bdf8; }
+    .card h2 { font-size: 1.15rem; margin-top: 0; color: #f8fafc; }
+    .card p { font-size: 0.92rem; color: #cbd5e1; }
+    .btn { display: inline-block; margin-top: 0.75rem; background: #38bdf8; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; }
+    .btn.sec { background: #334155; color: #f1f5f9; margin-left: 0.4rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Proyecto 3: Análisis de Accidentes de Tránsito en Zonas Urbanas (EE.UU.)</h1>
+    <p class="lead">
+      Portal central de entregables: Power BI desplegado en HTML, Informe Técnico (HTML/PDF/Word/MD),
+      código ETL (Python, PySpark, SQL, Power Query M), gráficas de Python y análisis estadístico ANOVA sobre 7.73M de registros.
+    </p>
+    <div class="grid">
+      <div class="card">
+        <h2>📊 Tablero Power BI en HTML</h2>
+        <p>Despliegue interactivo con las 8 vistas finalizadas de Power BI, medidas DAX explicadas, código M y visor Publish-to-Web.</p>
+        <a class="btn" href="powerbi/dashboard_powerbi.html">Abrir Dashboard Power BI</a>
+      </div>
+      <div class="card">
+        <h2>📘 Informe Técnico Completo</h2>
+        <p>Objetivos, descripción del ETL, 10 requerimientos con gráficas Python, Power BI, DAX, ANOVA y conclusiones.</p>
+        <a class="btn" href="docs/informe_tecnico.html">Ver Informe HTML</a>
+        <a class="btn sec" href="docs/informe_tecnico.pdf">PDF</a>
+        <a class="btn sec" href="docs/informe_tecnico.docx">Word</a>
+      </div>
+      <div class="card">
+        <h2>🎤 Presentación Oral</h2>
+        <p>Diapositivas ejecutivas (.pptx) con notas de exposición y guion completo cronometrado de 10–12 minutos.</p>
+        <a class="btn" href="docs/presentacion_oral.pptx">Descargar PPTX</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
