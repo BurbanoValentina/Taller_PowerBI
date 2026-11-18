@@ -22,3 +22,4 @@ derby.log
 ~$*.pptx
 .DS_Store
 Thumbs.db
+.vercel
