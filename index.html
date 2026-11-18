@@ -5,45 +5,353 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Proyecto 3 — Análisis de Accidentes de Tránsito en Zonas Urbanas</title>
   <style>
-    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #0f172a; color: #f1f5f9; margin: 0; padding: 2rem 1rem; line-height: 1.6; }
-    .wrap { max-width: 1020px; margin: 0 auto; }
-    h1 { font-size: 2rem; margin-bottom: 0.4rem; color: #38bdf8; }
-    p.lead { color: #94a3b8; margin-bottom: 2rem; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.25rem; }
-    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 1.35rem; transition: border-color 0.2s; }
-    .card:hover { border-color: #38bdf8; }
-    .card h2 { font-size: 1.15rem; margin-top: 0; color: #f8fafc; }
-    .card p { font-size: 0.92rem; color: #cbd5e1; }
-    .btn { display: inline-block; margin-top: 0.75rem; background: #38bdf8; color: #0f172a; padding: 0.5rem 1rem; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 0.9rem; }
-    .btn.sec { background: #334155; color: #f1f5f9; margin-left: 0.4rem; }
+    /* ── Reset & Base ─────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8f9fb;
+      --surface: #ffffff;
+      --border: #e2e6ed;
+      --text: #1a1f2b;
+      --text-secondary: #5a6377;
+      --accent: #2563eb;
+      --accent-hover: #1d4fd7;
+      --accent-light: #eff4ff;
+      --accent-soft: #dbeafe;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+      --orange: #ea580c;
+      --orange-bg: #fff7ed;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+      --radius: 12px;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 30px rgba(0,0,0,0.08);
+      --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Focus ────────────────────────────────────────────────── */
+    :focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    /* ── Header / Hero ───────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0f172a 100%);
+      color: #fff;
+      padding: 3.5rem 1.5rem 3rem;
+      text-align: center;
+    }
+    .hero .badge {
+      display: inline-block;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #93c5fd;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 1rem;
+    }
+    .hero h1 {
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 800;
+      line-height: 1.25;
+      max-width: 820px;
+      margin: 0 auto 0.75rem;
+    }
+    .hero .lead {
+      color: #94a3b8;
+      font-size: clamp(0.92rem, 2vw, 1.05rem);
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
+
+    /* ── KPI strip ───────────────────────────────────────────── */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 1rem;
+      max-width: 1060px;
+      margin: -1.5rem auto 0;
+      padding: 0 1.25rem;
+      position: relative;
+      z-index: 2;
+    }
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem 1.2rem;
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    .kpi .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); font-weight: 600; }
+    .kpi .value { font-size: 1.55rem; font-weight: 800; color: var(--text); margin: 0.2rem 0 0.1rem; }
+    .kpi .note  { font-size: 0.76rem; color: var(--text-secondary); }
+
+    /* ── Main Container ──────────────────────────────────────── */
+    .container {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 2.5rem 1.25rem 3rem;
+    }
+    .section-title {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-secondary);
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Featured Card (Dashboard CTA) ───────────────────────── */
+    .featured {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    .featured-card {
+      background: var(--accent-light);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 2rem 2.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+    .featured-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+    .featured-icon {
+      width: 56px; height: 56px;
+      background: var(--accent);
+      border-radius: 14px;
+      display: grid; place-items: center;
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+    .featured-body { flex: 1; min-width: 220px; }
+    .featured-body h2 { font-size: 1.3rem; font-weight: 700; color: var(--text); margin-bottom: 0.35rem; }
+    .featured-body p { color: var(--text-secondary); font-size: 0.93rem; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 0.7rem 1.4rem;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: background 0.15s, transform 0.1s;
+      flex-shrink: 0;
+    }
+    .btn:hover { background: var(--accent-hover); transform: translateY(-1px); }
+    .btn svg { width: 18px; height: 18px; }
+
+    /* ── Deliverables Grid ────────────────────────────────────── */
+    .deliverables-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.1rem;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem 1.5rem 1.35rem;
+      box-shadow: var(--shadow-sm);
+      transition: box-shadow 0.2s, border-color 0.2s, transform 0.15s;
+      display: flex;
+      flex-direction: column;
+    }
+    .card:hover { box-shadow: var(--shadow-md); border-color: #c7d2e0; transform: translateY(-2px); }
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: grid; place-items: center;
+      font-size: 1.15rem;
+      margin-bottom: 0.9rem;
+      flex-shrink: 0;
+    }
+    .card-icon.blue   { background: var(--accent-soft); }
+    .card-icon.green  { background: var(--success-bg); }
+    .card-icon.orange { background: var(--orange-bg); }
+    .card-icon.purple { background: var(--purple-bg); }
+    .card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; color: var(--text); }
+    .card p  { font-size: 0.88rem; color: var(--text-secondary); flex: 1; margin-bottom: 1rem; line-height: 1.55; }
+    .card-links { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-decoration: none;
+      padding: 0.35rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid var(--accent-soft);
+      background: var(--accent-light);
+      transition: background 0.15s, color 0.15s;
+    }
+    .card-link:hover { background: var(--accent-soft); }
+    .card-link.secondary {
+      color: var(--text-secondary);
+      border-color: var(--border);
+      background: var(--bg);
+    }
+    .card-link.secondary:hover { background: var(--border); }
+
+    /* ── Footer ───────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ── Responsive ───────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .hero { padding: 2.5rem 1.25rem 2rem; }
+      .kpi-strip { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+      .featured-card { padding: 1.4rem; }
+      .deliverables-grid { grid-template-columns: 1fr; }
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>Proyecto 3: Análisis de Accidentes de Tránsito en Zonas Urbanas (EE.UU.)</h1>
+
+  <!-- ═══ Hero ═══ -->
+  <header class="hero">
+    <span class="badge">Proyecto 3 · Análisis de Datos</span>
+    <h1>Análisis de Accidentes de Tránsito en Zonas Urbanas (EE.UU.)</h1>
     <p class="lead">
-      Portal central de entregables: Power BI desplegado en HTML, Informe Técnico (HTML/PDF/Word/MD),
-      código ETL (Python, PySpark, SQL, Power Query M), gráficas de Python y análisis estadístico ANOVA sobre 7.73M de registros.
+      Integración de <strong>7,728,394 registros</strong> (2016 – 2023) con variables climáticas, de infraestructura vial y datos demográficos del Censo EE.UU.&nbsp;2023. Pipeline ETL reproducible, dashboard Power BI, pruebas ANOVA y todos los entregables documentales.
     </p>
-    <div class="grid">
-      <div class="card">
-        <h2>📊 Tablero Power BI en HTML</h2>
-        <p>Despliegue interactivo con las 8 vistas finalizadas de Power BI, medidas DAX explicadas, código M y visor Publish-to-Web.</p>
-        <a class="btn" href="powerbi/dashboard_powerbi.html">Abrir Dashboard Power BI</a>
-      </div>
-      <div class="card">
-        <h2>📘 Informe Técnico Completo</h2>
-        <p>Objetivos, descripción del ETL, 10 requerimientos con gráficas Python, Power BI, DAX, ANOVA y conclusiones.</p>
-        <a class="btn" href="docs/informe_tecnico.html">Ver Informe HTML</a>
-        <a class="btn sec" href="docs/informe_tecnico.pdf">PDF</a>
-        <a class="btn sec" href="docs/informe_tecnico.docx">Word</a>
-      </div>
-      <div class="card">
-        <h2>🎤 Presentación Oral</h2>
-        <p>Diapositivas ejecutivas (.pptx) con notas de exposición y guion completo cronometrado de 10–12 minutos.</p>
-        <a class="btn" href="docs/presentacion_oral.pptx">Descargar PPTX</a>
-      </div>
+  </header>
+
+  <!-- ═══ KPI Strip ═══ -->
+  <div class="kpi-strip">
+    <div class="kpi">
+      <div class="label">Registros</div>
+      <div class="value">7.73M</div>
+      <div class="note">49 estados + D.C.</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Período</div>
+      <div class="value">2016–2023</div>
+      <div class="note">Enero 2016 → Marzo 2023</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Severidad #1</div>
+      <div class="value">Nivel 2</div>
+      <div class="note">79.67 % de los eventos</div>
+    </div>
+    <div class="kpi">
+      <div class="label">Ciudad Crítica</div>
+      <div class="value">Miami</div>
+      <div class="note">186,768 accidentes</div>
     </div>
   </div>
+
+  <!-- ═══ Main Content ═══ -->
+  <main class="container">
+
+    <!-- Featured CTA: Dashboard -->
+    <p class="section-title">Acceso principal</p>
+    <div class="featured">
+      <div class="featured-card">
+        <div class="featured-icon">📊</div>
+        <div class="featured-body">
+          <h2>Tablero Power BI · Despliegue Web</h2>
+          <p>Explora las 8 vistas del dashboard interactivo, las medidas DAX explicadas, el código Power Query&nbsp;(M) y el visor Publish-to-Web embebido.</p>
+        </div>
+        <a class="btn" href="powerbi/dashboard_powerbi.html">
+          Abrir Dashboard
+          <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Deliverables Grid -->
+    <p class="section-title">Entregables del Proyecto</p>
+    <div class="deliverables-grid">
+
+      <!-- Informe Técnico -->
+      <div class="card">
+        <div class="card-icon blue">📘</div>
+        <h3>Informe Técnico Completo</h3>
+        <p>Objetivos, descripción del ETL, respuesta a los 10 requerimientos analíticos con gráficas Python, auditoría de Power BI, medidas DAX, resultados ANOVA y conclusiones.</p>
+        <div class="card-links">
+          <a class="card-link" href="docs/informe_tecnico.html">HTML</a>
+          <a class="card-link secondary" href="docs/informe_tecnico.pdf">PDF</a>
+          <a class="card-link secondary" href="docs/informe_tecnico.docx">Word</a>
+          <a class="card-link secondary" href="docs/informe_tecnico.md">Markdown</a>
+        </div>
+      </div>
+
+      <!-- Presentación Oral -->
+      <div class="card">
+        <div class="card-icon orange">🎤</div>
+        <h3>Presentación Oral</h3>
+        <p>15 diapositivas ejecutivas con notas del orador y guion completo cronometrado para una exposición de 10–12 minutos.</p>
+        <div class="card-links">
+          <a class="card-link" href="docs/presentacion_oral.pptx">Descargar PPTX</a>
+          <a class="card-link secondary" href="docs/guion_presentacion_oral.md">Guion</a>
+        </div>
+      </div>
+
+      <!-- Código ETL -->
+      <div class="card">
+        <div class="card-icon green">⚙️</div>
+        <h3>Código ETL y Consultas SQL</h3>
+        <p>Pipeline Python/PyArrow + PySpark, consultas SQL analíticas sobre SQLite y script Power Query&nbsp;(M) para Power BI.</p>
+        <div class="card-links">
+          <a class="card-link" href="src/etl_us_accidents.py">Python ETL</a>
+          <a class="card-link secondary" href="src/etl_pyspark.py">PySpark</a>
+          <a class="card-link secondary" href="sql/queries_analisis.sql">SQL</a>
+          <a class="card-link secondary" href="powerbi/power_query_etl.pq">Power Query</a>
+        </div>
+      </div>
+
+      <!-- ANOVA & Análisis -->
+      <div class="card">
+        <div class="card-icon purple">📐</div>
+        <h3>Análisis Estadístico ANOVA</h3>
+        <p>ANOVA unifactorial, factorial 2 vías (Clima × Franja), Welch, Kruskal-Wallis y contrastes Tukey-Kramer HSD sobre 7.73M registros.</p>
+        <div class="card-links">
+          <a class="card-link" href="src/anova_analysis.py">Código ANOVA</a>
+          <a class="card-link secondary" href="src/analysis_sql_and_charts.py">Gráficas</a>
+          <a class="card-link secondary" href="powerbi/dax_measures.md">DAX</a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    Proyecto 3 · Análisis de Accidentes de Tránsito en Zonas Urbanas · Dataset Kaggle US Accidents (2016–2023)
+    &nbsp;·&nbsp; <a href="https://github.com/BurbanoValentina/Taller_PowerBI" target="_blank" rel="noopener">Repositorio GitHub</a>
+  </footer>
+
 </body>
 </html>
